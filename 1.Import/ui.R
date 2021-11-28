@@ -33,7 +33,7 @@ MdImportScreenUI <- function(id) {
                                 ns = ns,
                                 selectInput(ns("MdImportScreenImportFileSeparatorSlct"),
                                             "Column separator",
-                                            choices = c(",", ";", "Single space" = " ", "Tab" = "\t")))),
+                                            choices = c(",", ";", "Tab" = "\t")))),
 
     ),
     
