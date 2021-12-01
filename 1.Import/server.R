@@ -7,11 +7,12 @@ MdImportScreenServer <- function(id) {
       MdImportScreenDatasetVar <- reactive({
         req(input$MdImportScreenImportDataBtn)
         FnImportScreenFileImport(input$MdImportScreenImportFileSlct$datapath,
+                                 tools::file_ext(input$MdImportScreenImportFileSlct$datapath),
                                  input$MdImportScreenImportFileFormatSlct,
                                  input$MdImportScreenImportFileSeparatorSlct,
                                  input$MdImportScreenImportFileDecimalSeparatorSlct,
-                                 input$MdImportScreenImportFileRangeCellSlct,
-                                 input$MdImportScreenImportFileSheetSlct)
+                                 input$MdImportScreenImportFileSheetSlct,
+                                 input$MdImportScreenImportFileRangeCellSlct)
       })
       
       output$ImportScreenServerDatasetVisualizationTbl <- renderDataTable({

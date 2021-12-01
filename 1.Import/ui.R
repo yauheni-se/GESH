@@ -11,7 +11,13 @@ MdImportScreenUI <- function(id) {
       fluidRow(
         column(width = 6,
                selectInput(ns("MdImportScreenImportFileFormatSlct"), "Select file format",
-                           choices = c("csv", "Excel", "txt", "SPSS", "SAS", "STATA", "Gretl"))),
+                           choices = c("csv" = "csv",
+                                       "Excel" = "xlsx",
+                                       "txt" = "txt",
+                                       "SPSS" = "sav",
+                                       "SAS" = "sas7bdat",
+                                       "STATA" = "dta",
+                                       "Gretl" = "gdt"))),
         column(width = 6,
                fileInput(ns("MdImportScreenImportFileSlct"),
                          "Select file",
@@ -22,7 +28,7 @@ MdImportScreenUI <- function(id) {
       fluidRow(
         column(width = 6,
                conditionalPanel("input.MdImportScreenImportFileFormatSlct == 'csv' ||
-                                input.MdImportScreenImportFileFormatSlct == 'Excel' ||
+                                input.MdImportScreenImportFileFormatSlct == 'xlsx' ||
                                 input.MdImportScreenImportFileFormatSlct == 'txt'",
                                 ns = ns,
                                 selectInput(ns("MdImportScreenImportFileDecimalSeparatorSlct"),
@@ -39,7 +45,7 @@ MdImportScreenUI <- function(id) {
     
     br(),
     fluidRow(
-      conditionalPanel("input.MdImportScreenImportFileFormatSlct == 'Excel'",
+      conditionalPanel("input.MdImportScreenImportFileFormatSlct == 'xlsx'",
                        ns = ns,
                        column(width = 4,
                               prettyCheckbox(ns("MdImportScreenImportFileRangeCellBtn"),

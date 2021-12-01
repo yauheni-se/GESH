@@ -1,5 +1,6 @@
 Sys.setenv(lang = "en_US")
 options(shiny.maxRequestSize = 30 * 1024^2)
+rm(list = ls())
 
 Subscripts <- as.list(list.files(path = ".", recursive = TRUE))
 for (i in Subscripts) {
