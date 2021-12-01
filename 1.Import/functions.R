@@ -11,7 +11,9 @@ FnImportScreenFileImport <- function(FileSlct,
     stop()
   }
   
-  if (FileFormatReal != FileFormatSlct & !(FileFormatReal %chin% c("xls", "xlsx") & FileFormatSlct == "xlsx")) {
+  if (FileFormatReal != FileFormatSlct &
+      !(FileFormatReal %chin% c("xls", "xlsx") & FileFormatSlct == "xlsx") &
+      !(FileFormatReal %chin% c("csv", "txt") & FileFormatSlct == "csv")) {
     show_toast("Selected file format is not correct", type = "error", position = "top-end", timer = 6000)
     stop()
   }
@@ -52,7 +54,11 @@ FnImportScreenFileImport <- function(FileSlct,
   }
   
   if (FileFormatSlct == "csv") {
-    read.delim(FileSlct, sep = FileSeparatorSlct, dec = DecimalSeparatorSlct)
+    if (FileFormatReal =="txt") {
+      fread(FileSlct, sep = "\t", dec = DecimalSeparatorSlct)
+    } else {
+      fread(FileSlct, sep = FileSeparatorSlct, dec = DecimalSeparatorSlct)
+    }
     
   } else if (FileFormatSlct == "xlsx") {
     if (RangeCellSlct == "") { 
@@ -60,9 +66,6 @@ FnImportScreenFileImport <- function(FileSlct,
     } else {
       read_excel(FileSlct, FileSheetSlct, RangeCellSlct)
     }
-    
-  } else if (FileFormatSlct == "txt") {
-    read.table(FileSlct, dec = DecimalSeparatorSlct)
     
   } else if (FileFormatSlct == "sav") {
     read.spss(FileSlct, to.data.frame = TRUE)
@@ -76,5 +79,4 @@ FnImportScreenFileImport <- function(FileSlct,
   } else if (FileFormatSlct == "gdt") {
     read.gdt(FileSlct)
   }
-  
 }

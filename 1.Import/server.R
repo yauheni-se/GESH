@@ -15,6 +15,9 @@ MdImportScreenServer <- function(id) {
                                  input$MdImportScreenImportFileRangeCellSlct)
       })
       
+      observeEvent(input$MdImportScreenImportFileRangeCellBtn,{
+        updateTextAreaInput(session, inputId = "MdImportScreenImportFileRangeCellSlct", value = "")
+      })
       output$ImportScreenServerDatasetVisualizationTbl <- renderDataTable({
         req(input$MdImportScreenImportDataBtn)
         DT::datatable(isolate(MdImportScreenDatasetVar()),

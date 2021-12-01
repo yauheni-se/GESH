@@ -11,9 +11,8 @@ MdImportScreenUI <- function(id) {
       fluidRow(
         column(width = 6,
                selectInput(ns("MdImportScreenImportFileFormatSlct"), "Select file format",
-                           choices = c("csv" = "csv",
+                           choices = c("csv/txt" = "csv",
                                        "Excel" = "xlsx",
-                                       "txt" = "txt",
                                        "SPSS" = "sav",
                                        "SAS" = "sas7bdat",
                                        "STATA" = "dta",
@@ -21,7 +20,7 @@ MdImportScreenUI <- function(id) {
         column(width = 6,
                fileInput(ns("MdImportScreenImportFileSlct"),
                          "Select file",
-                         accept = c(".csv", ".tsv", ".txt", ".gdt", ".xlsx", ".xls", ".sav", ".dta", ".sas7bdat"), 
+                         accept = c(".csv", ".txt", ".gdt", ".xlsx", ".xls", ".sav", ".dta", ".sas7bdat"), #, ".tsv"
                          buttonLabel = "Browse.."))
       ),
       
@@ -38,8 +37,8 @@ MdImportScreenUI <- function(id) {
                conditionalPanel("input.MdImportScreenImportFileFormatSlct == 'csv'",
                                 ns = ns,
                                 selectInput(ns("MdImportScreenImportFileSeparatorSlct"),
-                                            "Column separator",
-                                            choices = c(",", ";", "Tab" = "\t")))),
+                                            "CSV column separator",
+                                            choices = c(",", ";")))),
 
     ),
     
