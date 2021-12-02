@@ -16,7 +16,7 @@ MdImportScreenServer <- function(id) {
       observeEvent(input$MdImportScreenImportDataBtn, {
         
         req(input$MdImportScreenImportFileSlct)
-        cat(GlobalReactiveLstDatasetIndicatorVar)
+
         MdImportScreenCurrentDatasetNameVar <- file_path_sans_ext(input$MdImportScreenImportFileSlct$name)
         
         # In case of any error in data import, current dataset will be set to NULL and toast message arises
@@ -27,7 +27,6 @@ MdImportScreenServer <- function(id) {
                                                                  input$MdImportScreenImportFileDecimalSeparatorSlct,
                                                                  input$MdImportScreenImportFileSheetSlct,
                                                                  input$MdImportScreenImportFileRangeCellSlct)
-        print(MdImportScreenCurrentDataset)
           
         # Condition not to add current dataset to the datasets list if it was NULL
         if (!is.null(MdImportScreenCurrentDataset)) {
