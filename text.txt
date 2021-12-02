@@ -1,1 +1,11 @@
-d
+Coding convention:
+- UpperCamelCase;
+- UI and server modules' name start with menuItem name; UI modules end with `UI`, server modules end with `Server`;
+- Modules have prefix `Md` in the very beginning; Functions have prefix `Fn`.
+- namespaces for UI and server modules are the same as menuItem name;
+- id's within modules end with such abbreviations:
+  - Btn for buttons,
+  - Slct for selectors, text areas, radio buttons,
+  - Tbl for tables,
+  - Gr for graphs,
+  - Var for variables;
