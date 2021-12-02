@@ -17,7 +17,10 @@ ui <- tagList(dashboardPage(
     sidebarMenu(
       menuItem("Import", tabName = "Import", icon = icon("upload")),
       menuItem("Modify", tabName = "Modify", icon = icon("wrench")),
-      menuItem("Visualize", tabName = "Visualize", icon = icon("chart-bar")),
+      menuItem("Explore", tabName = "Explore", icon = icon("lightbulb"),
+               menuSubItem("Visualize", tabName = "Visualize", icon = icon("chart-bar")),
+               menuSubItem("Summary Statistics", tabName = "SummaryStatistics", icon = icon("search"))
+      ),
       menuItem("Model", tabName = "Model", icon = icon("layer-group")),
       menuItem("Test", tabName = "Test", icon = icon("vial")),
       menuItem("Predict", tabName = "Predict", icon = icon("chart-line")),
@@ -29,7 +32,8 @@ ui <- tagList(dashboardPage(
   dashboardBody(
     tabItems(
       # here will be 8 ui modules
-      MdImportScreenUI("Import")
+      MdImportScreenUI("Import"),
+      MdVisualizeScreenUI("Visualize")
     )
   ),
   

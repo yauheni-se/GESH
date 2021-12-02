@@ -37,13 +37,18 @@ MdImportScreenServer <- function(id) {
                          type = "warning",
                          position = "top-end",
                          timer = 6000)
+            
+            output$ImportScreenServerDatasetVisualizationTbl <- renderDataTable({
+              DT::datatable(isolate(MdImportScreenCurrentDataset),
+                            options = list(autoWidth = FALSE, scrollX = TRUE, scrollY = TRUE, pageLength = 6, lengthChange = FALSE))
+            })
+            
           } else {
             GlobalReactiveLst$ImportedDatasets[[GlobalReactiveLstDatasetIndicatorVar]] <<- MdImportScreenCurrentDataset
             
             names(GlobalReactiveLst$ImportedDatasets)[GlobalReactiveLstDatasetIndicatorVar] <- MdImportScreenCurrentDatasetNameVar
 
             output$ImportScreenServerDatasetVisualizationTbl <- renderDataTable({
-              req(input$MdImportScreenImportDataBtn)
               DT::datatable(isolate(MdImportScreenCurrentDataset),
               options = list(autoWidth = FALSE, scrollX = TRUE, scrollY = TRUE, pageLength = 6, lengthChange = FALSE))
             })

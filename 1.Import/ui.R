@@ -78,7 +78,8 @@ MdImportScreenUI <- function(id) {
                         label = "Import",
                         icon = icon("file-upload"),
                         style = "jelly",
-                        color = "primary",block = TRUE))
+                        color = "primary",
+                        block = TRUE))
         )
       ),
     
