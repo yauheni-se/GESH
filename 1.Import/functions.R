@@ -8,23 +8,21 @@ FnImportScreenFileImport <- function(FileSlct,
 
   if (is.null(FileSlct)) {
     show_toast("File not selected", type = "error", position = "top-end", timer = 6000)
-    stop()
+    return()
   }
   
-  if (FileFormatReal != FileFormatSlct &
-      !(FileFormatReal %chin% c("xls", "xlsx") & FileFormatSlct == "xlsx") &
-      !(FileFormatReal %chin% c("csv", "txt") & FileFormatSlct == "csv")) {
+  if (FileFormatReal != FileFormatSlct & !((FileFormatReal %chin% c("xls", "xlsx") & FileFormatSlct == "xlsx") | 
+                                           (FileFormatReal %chin% c("csv", "txt") & FileFormatSlct == "csv"))) {
     show_toast("Selected file format is not correct", type = "error", position = "top-end", timer = 6000)
-    stop()
+    return()
   }
-  
   
   if (FileFormatReal %chin% c("xls", "xlsx") & FileFormatSlct == "xlsx") {
     
     # Excel sheet check
     if (length(excel_sheets(FileSlct)) != FileSheetSlct) {
       show_toast("Selected Excel sheet does not exist", type = "error", position = "top-end", timer = 6000)
-      stop()
+      return()
     }
     
     if (RangeCellSlct != "") {
@@ -34,7 +32,7 @@ FnImportScreenFileImport <- function(FileSlct,
                    type = "error",
                    position = "top-end",
                    timer = 6000)
-        stop()
+        return()
       }
       
       # Correct rectangular form check
@@ -48,7 +46,7 @@ FnImportScreenFileImport <- function(FileSlct,
     
       if (any(RangeCellRowVar == "") | RangeCellRowVar[1] > RangeCellRowVar[2] | RangeCellColumnVar[[1]] > RangeCellColumnVar[[2]]) {
         show_toast("Selected range is not a rectangle", type = "error", position = "top-end", timer = 6000)
-        stop()
+        return()
       }
     }
   }
