@@ -58,7 +58,7 @@ MdImportScreenServer <- function(id) {
       })
       
       observeEvent(input$MdImportScreenImportFileRangeCellBtn, {
-        updateTextAreaInput(session, inputId = "MdImportScreenImportFileRangeCellSlct", value = "")
+        updateTextInput(session, inputId = "MdImportScreenImportFileRangeCellSlct", value = "")
       })
     }
   )    
