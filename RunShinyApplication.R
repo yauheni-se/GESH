@@ -44,6 +44,7 @@ ui <- tagList(dashboardPage(
 server <- function(input, output, session) {
   # here will be 8 server modules
   MdImportScreenServer("Import")
+  MdVisualizeScreenServer("Visualize")
 }
 
 shinyApp(ui, server)

@@ -1,7 +1,6 @@
 MdImportScreenServer <- function(id) {
   moduleServer(
     id,
-    ## Below is the module function
     function(input, output, session) {
       
       GlobalReactiveLst <<- reactiveValues()
@@ -20,13 +19,13 @@ MdImportScreenServer <- function(id) {
         MdImportScreenCurrentDatasetNameVar <- file_path_sans_ext(input$MdImportScreenImportFileSlct$name)
         
         # In case of any error in data import, current dataset will be set to NULL and toast message arises
-        MdImportScreenCurrentDataset <- FnImportScreenFileImport(input$MdImportScreenImportFileSlct$datapath,
-                                                                 file_ext(input$MdImportScreenImportFileSlct$datapath),
-                                                                 input$MdImportScreenImportFileFormatSlct,
-                                                                 input$MdImportScreenImportFileSeparatorSlct,
-                                                                 input$MdImportScreenImportFileDecimalSeparatorSlct,
-                                                                 input$MdImportScreenImportFileSheetSlct,
-                                                                 input$MdImportScreenImportFileRangeCellSlct)
+        MdImportScreenCurrentDataset <<- FnImportScreenFileImport(input$MdImportScreenImportFileSlct$datapath,
+                                                                  file_ext(input$MdImportScreenImportFileSlct$datapath),
+                                                                  input$MdImportScreenImportFileFormatSlct,
+                                                                  input$MdImportScreenImportFileSeparatorSlct,
+                                                                  input$MdImportScreenImportFileDecimalSeparatorSlct,
+                                                                  input$MdImportScreenImportFileSheetSlct,
+                                                                  input$MdImportScreenImportFileRangeCellSlct)
           
         # Condition not to add current dataset to the datasets list if it was NULL
         if (!is.null(MdImportScreenCurrentDataset)) {

@@ -19,7 +19,7 @@ MdVisualizeScreenUI <- function(id) {
       
         fluidRow(
           column(width = 2,
-                 selectInput(ns("MdVisualizeScreenImportCurrentDataset"), "Select dataset",
+                 selectInput(ns("MdVisualizeScreenSelectDataset"), "Select dataset",
                              choices = "")),
           column(width = 2,
                  selectInput(ns("MdVisualizeScreenPlotType"),
