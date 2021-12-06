@@ -147,7 +147,11 @@ MdVisualizeScreenServer <- function(id) {
             
           insertUI(selector = "#MdVisualizeScreenBoxPlotPlaceholder",
                    where = "afterBegin",
-                   ui = box(width = MdVisualizeScreenPlotBoxWidth,
+                   ui = box(title = "",
+                            status = "primary",
+                            solidHeader = TRUE,
+                            collapsible = TRUE,
+                            width = MdVisualizeScreenPlotBoxWidth,
                             fluidRow(
                               column(width = 12,
                                      plotlyOutput(ns("MdVisualizeScreenPlot")))

@@ -219,6 +219,7 @@ MdVisualizeScreenUI <- function(id) {
                         style = "jelly",
                         color = "primary",
                         block = TRUE))),
-  div(id = "MdVisualizeScreenBoxPlotPlaceholder")
+    br(),
+    fluidRow(id = "MdVisualizeScreenBoxPlotPlaceholder")
   )
 }
