@@ -1,7 +1,7 @@
 FnVisualizeScreenBuildPlot <- function(Dataset,
                                        PlotType,
                                        PlotAxisX,
-                                       PlotAxisY,
+                                       PlotAxisY = "",
                                        PlotColor,
                                        PlotSize,
                                        PlotOpacity,
@@ -241,5 +241,7 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
     }
   }
   
-  return(PlotBasicLabeled)
+  PlotFinal <- ggplotly(PlotBasicLabeled)
+  
+  return(PlotFinal )
 }

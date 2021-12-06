@@ -192,7 +192,7 @@ MdVisualizeScreenUI <- function(id) {
       br(),
       fluidRow(
         column(width = 2,
-               actionBttn(ns("MdVisualizeScreenPlotBtn"),
+               actionBttn(ns("MdVisualizeScreenCreatePlotBtn"),
                           label = "Create",
                           icon = icon("tools"),
                           style = "jelly",
@@ -218,6 +218,7 @@ MdVisualizeScreenUI <- function(id) {
                         icon = icon("file-download"),
                         style = "jelly",
                         color = "primary",
-                        block = TRUE)))
+                        block = TRUE))),
+  div(id = "MdVisualizeScreenBoxPlotPlaceholder")
   )
 }

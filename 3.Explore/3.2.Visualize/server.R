@@ -2,28 +2,29 @@ MdVisualizeScreenServer <- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
+      ns <- session$ns
 
-     #####
-     # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / NEW DATASET IS SELECTED
-     #####
+      #####
+      # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / NEW DATASET IS SELECTED
+      #####
       
-     MdVisualizeScreenTriggerDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[names(GlobalReactiveLst$ImportedDatasets)[1]]]}) 
+      MdVisualizeScreenTriggerDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[names(GlobalReactiveLst$ImportedDatasets)[1]]]}) 
       
-     observeEvent(MdVisualizeScreenTriggerDataset(),{
-        updateSelectInput(session,
-                          inputId = "MdVisualizeScreenSelectDataset",
-                          choices = names(GlobalReactiveLst$ImportedDatasets),
-                          selected = names(GlobalReactiveLst$ImportedDatasets)[length(GlobalReactiveLst$ImportedDatasets)])
-     })
+      observeEvent(MdVisualizeScreenTriggerDataset(),{
+          updateSelectInput(session,
+                            inputId = "MdVisualizeScreenSelectDataset",
+                            choices = names(GlobalReactiveLst$ImportedDatasets),
+                            selected = names(GlobalReactiveLst$ImportedDatasets)[length(GlobalReactiveLst$ImportedDatasets)])
+      })
      
-     MdVisualizeScreenCurrentDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[input$MdVisualizeScreenSelectDataset]]})
+      MdVisualizeScreenCurrentDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[input$MdVisualizeScreenSelectDataset]]})
      
-     MdVisualizeScreenCurrentDatasetColumnNames <- reactive({names(MdVisualizeScreenCurrentDataset())})
+      MdVisualizeScreenCurrentDatasetColumnNames <- reactive({names(MdVisualizeScreenCurrentDataset())})
      
-     MdVisualizeScreenCurrentDatasetColumnNameSelected <- reactive({MdVisualizeScreenCurrentDatasetColumnNames()[1]})
+      MdVisualizeScreenCurrentDatasetColumnNameSelected <- reactive({MdVisualizeScreenCurrentDatasetColumnNames()[1]})
      
      
-     observeEvent(MdVisualizeScreenCurrentDataset(), {
+      observeEvent(MdVisualizeScreenCurrentDataset(), {
      
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotAxisX",
@@ -54,27 +55,109 @@ MdVisualizeScreenServer <- function(id) {
                           inputId = "MdVisualizeScreenPlotGroupGridColAxis",
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
                           selected = "")
+      })
+        
+      observeEvent(input$MdVisualizeScreenPlotAxisX, {
+        updateTextInput(session,
+                        inputId = "MdVisualizeScreenPlotAxisXName",
+                        value = input$MdVisualizeScreenPlotAxisX)
+      })
+        
+      observeEvent(input$MdVisualizeScreenPlotAxisY, {
+        updateTextInput(session,
+                        inputId = "MdVisualizeScreenPlotAxisYName",
+                        value = input$MdVisualizeScreenPlotAxisY)
+      })
+        
+      #####
+      # UPDATE WHEN RESET BUTTON IS TRIGGERED
+      #####
+        
+      #####
+      # ADD BOX WITH PLOT WHEN CREATE BUTTON IS TRIGGERED
+      #####
+        
+      MdVisualizeScreenReactiveLstPlotIndicatorVar <- 1
+        
+      # Condition if user clicks button before uploading anything
+      if (MdVisualizeScreenReactiveLstPlotIndicatorVar  < 1) {
+        MdVisualizeScreenReactiveLstPlotIndicatorVar <- 1
+      }
+        
+      observeEvent(input$MdVisualizeScreenCreatePlotBtn, {
+          
+        MdVisualizeScreenCurrentPlot <- FnVisualizeScreenBuildPlot(MdVisualizeScreenCurrentDataset(),
+                                                                   input$MdVisualizeScreenPlotType,
+                                                                   input$MdVisualizeScreenPlotAxisX,
+                                                                   input$MdVisualizeScreenPlotAxisY,
+                                                                   input$MdVisualizeScreenPlotColor,
+                                                                   input$MdVisualizeScreenPlotSize,
+                                                                   input$MdVisualizeScreenPlotOpacity,
+                                                                   input$MdVisualizeScreenPlotTheme,
+                                                                   input$MdVisualizeScreenPlotPointShape,
+                                                                   input$MdVisualizeScreenPlotLineType,
+                                                                   input$MdVisualizeScreenPlotAxisXName,
+                                                                   input$MdVisualizeScreenPlotAxisYName,
+                                                                   input$MdVisualizeScreenPlotTitle,
+                                                                   input$MdVisualizeScreenPlotFontSize,
+                                                                   input$MdVisualizeScreenPlotSecondaryLine,
+                                                                   input$MdVisualizeScreenPlotSecondaryLineQuantileProb,
+                                                                   input$MdVisualizeScreenPlotGroupColorAxis,
+                                                                   input$MdVisualizeScreenPlotGroupSizeAxis,
+                                                                   input$MdVisualizeScreenPlotGroupGridRowAxis,
+                                                                   input$MdVisualizeScreenPlotGroupGridColAxis)
+        if (!is.null(MdVisualizeScreenCurrentPlot)) {
+            
+          output$MdVisualizeScreenPlot <- renderPlotly(MdVisualizeScreenCurrentPlot)
+            
+          MdVisualizeScreenPlotReactiveLst <- reactiveValues()
+            
+          MdVisualizeScreenPlotReactiveLst$Plot[[MdVisualizeScreenReactiveLstPlotIndicatorVar]] <- MdVisualizeScreenCurrentPlot
+            
+          MdVisualizeScreenPlotReactiveLst$Configuration[[MdVisualizeScreenReactiveLstPlotIndicatorVar]] <- data.table(
+            Dataset = MdVisualizeScreenCurrentDataset(),
+            PlotType = input$MdVisualizeScreenPlotType,
+            PlotAxisX = input$MdVisualizeScreenPlotAxisX,
+            PlotAxisY = input$MdVisualizeScreenPlotAxisY,
+            PlotColor = input$MdVisualizeScreenPlotColor,
+            PlotSize = input$MdVisualizeScreenPlotSize,
+            PlotOpacity = input$MdVisualizeScreenPlotOpacity,
+            PlotTheme = input$MdVisualizeScreenPlotTheme,
+            PlotPointShape = input$MdVisualizeScreenPlotPointShape,
+            PlotLineType = input$MdVisualizeScreenPlotLineType,
+            PlotAxisXName = input$MdVisualizeScreenPlotAxisXName,
+            PlotAxisYName = input$MdVisualizeScreenPlotAxisYName,
+            PlotTitle = input$MdVisualizeScreenPlotTitle,
+            PlotFontSize = input$MdVisualizeScreenPlotFontSize,
+            PlotSecondaryLines = input$MdVisualizeScreenPlotSecondaryLine,
+            PlotSecondaryLineQuantileProbs = input$MdVisualizeScreenPlotSecondaryLineQuantileProb,
+            PlotGroupColorAxis = input$MdVisualizeScreenPlotGroupColorAxis,
+            PlotGroupSizeAxis = input$MdVisualizeScreenPlotGroupSizeAxis,
+            PlotGroupGridRowAxis = input$MdVisualizeScreenPlotGroupGridRowAxis,
+            PlotGroupGridColAxis = input$MdVisualizeScreenPlotGroupGridColAxis
+          )
+            
+          MdVisualizeScreenReactiveLstPlotIndicatorVar <<- MdVisualizeScreenReactiveLstPlotIndicatorVar + 1
+            
+          MdVisualizeScreenPlotBoxWidth <- switch(input$MdVisualizeScreenPlotBoxSize,
+                                                    "large" = 12,
+                                                    "big" = 8,
+                                                    "normal" = 6,
+                                                    "small" = 3)
+            
+          insertUI(selector = "#MdVisualizeScreenBoxPlotPlaceholder",
+                   where = "afterBegin",
+                   ui = box(width = MdVisualizeScreenPlotBoxWidth,
+                            fluidRow(
+                              column(width = 12,
+                                     plotlyOutput(ns("MdVisualizeScreenPlot")))
+                              )
+                            )
+                        )
+            
+          }
+          
         })
-        
-        observeEvent(input$MdVisualizeScreenPlotAxisX, {
-          updateTextInput(session,
-                          inputId = "MdVisualizeScreenPlotAxisXName",
-                          value = input$MdVisualizeScreenPlotAxisX)
-        })
-        
-        observeEvent(input$MdVisualizeScreenPlotAxisY, {
-          updateTextInput(session,
-                          inputId = "MdVisualizeScreenPlotAxisYName",
-                          value = input$MdVisualizeScreenPlotAxisY)
-        })
-        
-        #####
-        # UPDATE WHEN RESET BUTTON IS TRIGGERED
-        #####
-        
-        #####
-        # ADD BOX WITH PLOT WHEN CREATE BUTTON IS TRIGGERED
-        #####
         
         #####
         # CHANGE PLOT
