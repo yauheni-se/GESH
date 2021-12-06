@@ -2,27 +2,28 @@ MdVisualizeScreenServer <- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
-      
-     MdVisualizeScreenGlobalReactiveLstImportedDatasetNames <- reactive({names(GlobalReactiveLst$ImportedDatasets)})
 
-     GlobalReactiveLstImportedDatasetCurrentName <- reactive({MdVisualizeScreenGlobalReactiveLstImportedDatasetNames()[1]})
+     #####
+     # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / NEW DATASET IS SELECTED
+     #####
      
-     MdVisualizeScreenCurrentDataset <<- reactive({GlobalReactiveLst$ImportedDatasets[[GlobalReactiveLstImportedDatasetCurrentName()]]})
+     observeEvent(MdVisualizeScreenCurrentDataset(),{
+        print(MdVisualizeScreenCurrentDataset())
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenSelectDataset",
+                          choices = names(GlobalReactiveLst$ImportedDatasets),
+                          selected = names(GlobalReactiveLst$ImportedDatasets)[length(GlobalReactiveLst$ImportedDatasets)])
+     })
+     
+     MdVisualizeScreenCurrentDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[input$MdVisualizeScreenSelectDataset]]})
      
      MdVisualizeScreenCurrentDatasetColumnNames <- reactive({names(MdVisualizeScreenCurrentDataset())})
      
      MdVisualizeScreenCurrentDatasetColumnNameSelected <- reactive({MdVisualizeScreenCurrentDatasetColumnNames()[1]})
      
-     #####
-     # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED
-     #####
      
-     observe({
-        updateSelectInput(session,
-                          inputId = "MdVisualizeScreenSelectDataset",
-                          choices = MdVisualizeScreenGlobalReactiveLstImportedDatasetNames(),
-                          selected = GlobalReactiveLstImportedDatasetCurrentName())
-
+     observeEvent(MdVisualizeScreenCurrentDataset(), {
+     
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotAxisX",
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
