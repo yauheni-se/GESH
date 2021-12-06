@@ -6,9 +6,10 @@ MdVisualizeScreenServer <- function(id) {
      #####
      # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / NEW DATASET IS SELECTED
      #####
-     
-     observeEvent(MdVisualizeScreenCurrentDataset(),{
-        print(MdVisualizeScreenCurrentDataset())
+      
+     MdVisualizeScreenTriggerDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[names(GlobalReactiveLst$ImportedDatasets)[1]]]}) 
+      
+     observeEvent(MdVisualizeScreenTriggerDataset(),{
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenSelectDataset",
                           choices = names(GlobalReactiveLst$ImportedDatasets),
@@ -34,14 +35,6 @@ MdVisualizeScreenServer <- function(id) {
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
                           selected = "")
         
-        updateTextInput(session,
-                        inputId = "MdVisualizeScreenPlotAxisXName",
-                        value = input$MdVisualizeScreenPlotAxisX)
-        
-        updateTextInput(session,
-                        inputId = "MdVisualizeScreenPlotAxisYName",
-                        value = input$MdVisualizeScreenPlotAxisY)
-        
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotGroupColorAxis",
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
@@ -61,6 +54,18 @@ MdVisualizeScreenServer <- function(id) {
                           inputId = "MdVisualizeScreenPlotGroupGridColAxis",
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
                           selected = "")
+        })
+        
+        observeEvent(input$MdVisualizeScreenPlotAxisX, {
+          updateTextInput(session,
+                          inputId = "MdVisualizeScreenPlotAxisXName",
+                          value = input$MdVisualizeScreenPlotAxisX)
+        })
+        
+        observeEvent(input$MdVisualizeScreenPlotAxisY, {
+          updateTextInput(session,
+                          inputId = "MdVisualizeScreenPlotAxisYName",
+                          value = input$MdVisualizeScreenPlotAxisY)
         })
         
         #####

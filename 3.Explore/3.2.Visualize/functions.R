@@ -23,6 +23,31 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
   # CATCHING ERRORS, PRESETS CONFIGURATION
   #####
   
+  if (Dataset == "") {
+    show_toast("Dataset is not selected", type = "error", position = "top-end", timer = 6000)
+    return()
+  }
+  
+  if (PlotAxisY == "" & !(PlotType %chin% c("density", "histogram", "dotplot"))) {
+    show_toast(paste("Y varible required for plot type", PlotType), type = "error", position = "top-end", timer = 6000)
+    return()
+  }
+  
+  if (PlotAxisX == PlotAxisY) {
+    show_toast("Same variable for x and y axes selected", type = "error", position = "top-end", timer = 6000)
+    return()
+  }
+  
+  if (PlotAxisX %chin% c(PlotGroupColorAxis, PlotGroupSizeAxis, PlotGroupGridRowAxis, PlotGroupGridColAxis)) {
+    show_toast("Same variable for x and grouping axes selected", type = "error", position = "top-end", timer = 6000)
+    return()
+  }
+  
+  if (PlotAxisY %chin% c(PlotGroupColorAxis, PlotGroupSizeAxis, PlotGroupGridRowAxis, PlotGroupGridColAxis)) {
+    show_toast("Same variable for y and grouping axes selected", type = "error", position = "top-end", timer = 6000)
+    return()
+  }
+  
   if (PlotGroupSizeAxis != "") {
     PlotSize <- PlotGroupSizeAxis
     UsedSizeVar <- PlotGroupSizeAxis
