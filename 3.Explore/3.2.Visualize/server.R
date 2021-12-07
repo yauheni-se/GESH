@@ -80,10 +80,12 @@ MdVisualizeScreenServer <- function(id) {
       MdVisualizeScreenReactiveLstPlotIndicatorVar <- 1
         
       # Condition if user clicks button before uploading anything
-      if (MdVisualizeScreenReactiveLstPlotIndicatorVar  < 1) {
+      if (MdVisualizeScreenReactiveLstPlotIndicatorVar < 1) {
         MdVisualizeScreenReactiveLstPlotIndicatorVar <- 1
       }
-        
+      
+      MdVisualizeScreenPlotReactiveLst <- reactiveValues()
+      
       observeEvent(input$MdVisualizeScreenCreatePlotBtn, {
           
         MdVisualizeScreenCurrentPlot <- FnVisualizeScreenBuildPlot(MdVisualizeScreenCurrentDataset(),
@@ -107,10 +109,10 @@ MdVisualizeScreenServer <- function(id) {
                                                                    input$MdVisualizeScreenPlotGroupGridRowAxis,
                                                                    input$MdVisualizeScreenPlotGroupGridColAxis)
         if (!is.null(MdVisualizeScreenCurrentPlot)) {
-            
-          output$MdVisualizeScreenPlot <- renderPlotly(MdVisualizeScreenCurrentPlot)
-            
-          MdVisualizeScreenPlotReactiveLst <- reactiveValues()
+          
+          MdVisualizeScreenReactiveLstPlotIndicatorName <- paste0("MdVisualizeScreenPlot", MdVisualizeScreenReactiveLstPlotIndicatorVar)
+          
+          output[[MdVisualizeScreenReactiveLstPlotIndicatorName]] <- renderPlotly(MdVisualizeScreenCurrentPlot)
             
           MdVisualizeScreenPlotReactiveLst$Plot[[MdVisualizeScreenReactiveLstPlotIndicatorVar]] <- MdVisualizeScreenCurrentPlot
             
@@ -138,15 +140,17 @@ MdVisualizeScreenServer <- function(id) {
           )
             
           MdVisualizeScreenReactiveLstPlotIndicatorVar <<- MdVisualizeScreenReactiveLstPlotIndicatorVar + 1
-            
+          
+          
           MdVisualizeScreenPlotBoxWidth <- switch(input$MdVisualizeScreenPlotBoxSize,
-                                                    "large" = 12,
-                                                    "big" = 8,
-                                                    "normal" = 6,
-                                                    "small" = 3)
-            
+                                                            "large" = 12,
+                                                            "big" = 9,
+                                                            "normal" = 6,
+                                                            "small" = 3)
+          
           insertUI(selector = "#MdVisualizeScreenBoxPlotPlaceholder",
                    where = "afterBegin",
+                   session = session,
                    ui = box(title = "",
                             status = "primary",
                             solidHeader = TRUE,
@@ -154,7 +158,7 @@ MdVisualizeScreenServer <- function(id) {
                             width = MdVisualizeScreenPlotBoxWidth,
                             fluidRow(
                               column(width = 12,
-                                     plotlyOutput(ns("MdVisualizeScreenPlot")))
+                                     plotlyOutput(ns(MdVisualizeScreenReactiveLstPlotIndicatorName)))
                               )
                             )
                         )
