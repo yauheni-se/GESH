@@ -87,7 +87,7 @@ MdVisualizeScreenServer <- function(id) {
       MdVisualizeScreenPlotReactiveLst <- reactiveValues()
       
       observeEvent(input$MdVisualizeScreenCreatePlotBtn, {
-          
+        print(MdVisualizeScreenCurrentDataset())  
         MdVisualizeScreenCurrentPlot <- FnVisualizeScreenBuildPlot(MdVisualizeScreenCurrentDataset(),
                                                                    input$MdVisualizeScreenPlotType,
                                                                    input$MdVisualizeScreenPlotAxisX,

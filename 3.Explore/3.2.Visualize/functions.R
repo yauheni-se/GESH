@@ -28,6 +28,8 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
     return()
   }
   
+  Dataset <- as.data.table(Dataset)
+  
   if (PlotAxisY == "" & !(PlotType %chin% c("density", "histogram", "dotplot"))) {
     show_toast(paste("Y varible required for plot type", PlotType), type = "error", position = "top-end", timer = 6000)
     return()
@@ -76,7 +78,8 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
   if (exists("UsedColorVar")) {
     UsedVars <- c(UsedVars, UsedColorVar)
   }
-  
+  UsedVars <- UsedVars[!UsedVars %chin% c("", ".")]
+
   if (!all(sapply(Dataset[1, .(UsedVars)], class) %chin% c("factor", "numeric", "character", "integer"))) {
     show_toast("Only variables of types factor, numeric, character, integer alloved",
                type = "error",
