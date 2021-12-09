@@ -5,7 +5,7 @@ MdVisualizeScreenServer <- function(id) {
       ns <- session$ns
 
       #####
-      # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / NEW DATASET IS SELECTED
+      # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / SELECTED
       #####
       
       MdVisualizeScreenTriggerDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[names(GlobalReactiveLst$ImportedDatasets)[1]]]}) 
@@ -68,6 +68,16 @@ MdVisualizeScreenServer <- function(id) {
                         inputId = "MdVisualizeScreenPlotAxisYName",
                         value = input$MdVisualizeScreenPlotAxisY)
       })
+      
+      observeEvent(input$MdVisualizeScreenPlotType, {
+        
+        if (input$MdVisualizeScreenPlotType %chin% c("density", "histogram", "dotplot")) {
+          updateSelectInput(session,
+                            inputId = "MdVisualizeScreenPlotAxisY",
+                            choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                            selected = "")
+        }
+      })
         
       #####
       # UPDATE WHEN RESET BUTTON IS TRIGGERED
@@ -87,7 +97,6 @@ MdVisualizeScreenServer <- function(id) {
       MdVisualizeScreenPlotReactiveLst <- reactiveValues()
       
       observeEvent(input$MdVisualizeScreenCreatePlotBtn, {
-        print(MdVisualizeScreenCurrentDataset())  
         MdVisualizeScreenCurrentPlot <- FnVisualizeScreenBuildPlot(MdVisualizeScreenCurrentDataset(),
                                                                    input$MdVisualizeScreenPlotType,
                                                                    input$MdVisualizeScreenPlotAxisX,
@@ -142,11 +151,7 @@ MdVisualizeScreenServer <- function(id) {
           MdVisualizeScreenReactiveLstPlotIndicatorVar <<- MdVisualizeScreenReactiveLstPlotIndicatorVar + 1
           
           
-          MdVisualizeScreenPlotBoxWidth <- switch(input$MdVisualizeScreenPlotBoxSize,
-                                                            "large" = 12,
-                                                            "big" = 9,
-                                                            "normal" = 6,
-                                                            "small" = 3)
+          MdVisualizeScreenPlotBoxWidth <- switch(input$MdVisualizeScreenPlotBoxSize, "large" = 12, "big" = 9, "normal" = 6, "small" = 3)
           
           insertUI(selector = "#MdVisualizeScreenBoxPlotPlaceholder",
                    where = "afterBegin",

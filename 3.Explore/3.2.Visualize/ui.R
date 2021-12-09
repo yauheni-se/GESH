@@ -63,7 +63,7 @@ MdVisualizeScreenUI <- function(id) {
 
         fluidRow(
           column(width = 2,
-                 colourInput(ns("MdVisualizeScreenPlotColor"), "Color", value = "default")),
+                 colourInput(ns("MdVisualizeScreenPlotColor"), "Color", value = "black")),
           column(width = 2,
                  numericInput(ns("MdVisualizeScreenPlotSize"), "Size", value = 1, min = 0.1, max = 5, step = 0.1)),
           column(width = 2,
@@ -148,14 +148,14 @@ MdVisualizeScreenUI <- function(id) {
                                          "minimum" = "min",
                                          "maximum" = "max",
                                          "median",
-                                         "quantiles",
+                                         "quantiles" = "quantile",
                                          "y = 0",
                                          "x = 0"),
                              multiple = TRUE,
                              selected = "")),
           
           column(width = 3,
-                 conditionalPanel("input.MdVisualizeScreenPlotSecondaryLine == 'quantiles'",
+                 conditionalPanel("input.MdVisualizeScreenPlotSecondaryLine == 'quantile'",
                                   ns = ns,
                                   sliderInput(ns("MdVisualizeScreenPlotSecondaryLineQuantileProb"),
                                               "Quantile probabilities",
