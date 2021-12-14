@@ -12,6 +12,7 @@ library(dplyr)
 library(ggplot2)
 library(ggthemes)
 library(plotly)
+library(RColorBrewer)
 library(stringr)
 
 library(gretlReadWrite)

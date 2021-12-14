@@ -17,7 +17,8 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
                                        PlotGroupColorAxis,
                                        PlotGroupSizeAxis,
                                        PlotGroupGridRowAxis,
-                                       PlotGroupGridColAxis) {
+                                       PlotGroupGridColAxis,
+                                       PlotColorBrew) {
   
   #####
   # CATCHING ERRORS, PRESETS CONFIGURATION
@@ -66,8 +67,13 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
   }
   
   if (PlotGroupColorAxis != "") {
-    UsedVars <- c(UsedVars, PlotGroupColorAxis)
-    show_toast("Currently unable to customize color as grouping was used", type = "warning", position = "top-end", timer = 6000)
+    if (!class(pull(Dataset, PlotGroupColorAxis)[1]) %chin% c("character", "factor")) {
+      show_toast("Grouping color axis must be of type character or factor", type = "error", position = "top-end", timer = 6000)
+      return()
+    } else {
+      UsedVars <- c(UsedVars, PlotGroupColorAxis)
+    }
+    
   } else {
     PlotGroupColorAxis <- NULL
   }
@@ -171,6 +177,9 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
     } else {
       PlotBasicLabeled$layers[[1]]$aes_params$fill <- PlotColor
     }
+  } else {
+    PlotBasicLabeled <- PlotBasicLabeled +
+      scale_color_brewer(palette = PlotColorBrew)
   }
   
   PlotBasicLabeled$layers[[1]]$aes_params$alpha <- PlotOpacity

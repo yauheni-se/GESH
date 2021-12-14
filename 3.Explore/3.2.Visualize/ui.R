@@ -31,7 +31,6 @@ MdVisualizeScreenUI <- function(id) {
                                          "histogram",
                                          "dotted histogram" = "dotplot",
                                          "barplot" = "col",
-                                         #"pie",
                                          "box" = "boxplot",
                                          "violin"))),
            column(width = 2,
@@ -62,8 +61,26 @@ MdVisualizeScreenUI <- function(id) {
         collapsed = TRUE,
 
         fluidRow(
-          column(width = 2,
-                 colourInput(ns("MdVisualizeScreenPlotColor"), "Color", value = "black")),
+          conditionalPanel('input.MdVisualizeScreenPlotGroupColorAxis == ""',
+                           ns = ns,
+                           column(width = 2,
+                                  colourInput(ns("MdVisualizeScreenPlotColor"), "Color", value = "black"))),
+
+          conditionalPanel('(input.MdVisualizeScreenPlotType == "line" ||
+                            input.MdVisualizeScreenPlotType == "point") &&
+                            input.MdVisualizeScreenPlotGroupColorAxis != ""',
+                            ns = ns,
+                            column(width = 2,
+                                   selectInput(ns("MdVisualizeScreenPlotColorBrew"),
+                                               "Color palette",
+                                               choices = c("default" = "Set1",
+                                                           "standard set 1" = "Set2",
+                                                           "standard set 2" = "Set3",
+                                                           "pastel 1" = "Pastel1",
+                                                           "pastel 2" = "Pastel2",
+                                                           "paired" = "Paired",
+                                                           "accent" = "Accent",
+                                                           "dark" = "Dark2")))),
           column(width = 2,
                  numericInput(ns("MdVisualizeScreenPlotSize"), "Size", value = 1, min = 0.1, max = 5, step = 0.1)),
           column(width = 2,
@@ -77,9 +94,10 @@ MdVisualizeScreenUI <- function(id) {
                                          "extra minimal" = "void",
                                          "excel",
                                          "economist"))),
-          column(width = 2,
-                 conditionalPanel("input.MdVisualizeScreenPlotType == 'point'",
-                                  ns = ns,
+          
+          conditionalPanel("input.MdVisualizeScreenPlotType == 'point'",
+                           ns = ns,
+                           column(width = 2,
                                   selectInput(ns("MdVisualizeScreenPlotPointShape"),
                                               "Point shape",
                                               choices = c("round" = 19,
@@ -88,20 +106,21 @@ MdVisualizeScreenUI <- function(id) {
                                                           "triangle" = 17,
                                                           "plus" = 3,
                                                           "cross" = 4)))),
-          column(width = 2,
-                 conditionalPanel("input.MdVisualizeScreenPlotType == 'line' ||
-                                  input.MdVisualizeScreenPlotType == 'violin' ||
-                                  input.MdVisualizeScreenPlotType == 'density'",
-                                  ns = ns,
-                                  selectInput(ns("MdVisualizeScreenPlotLineType"),
-                                              "Line type",
-                                              choices = c("solid",
-                                                          "dashed",
-                                                          "dotted",
-                                                          "dashes and dots" = "dotdash",
-                                                          "long dashes" = "longdash",
-                                                          "mixed dashes" = "twodash"))))
-        
+          
+          conditionalPanel("input.MdVisualizeScreenPlotType == 'line' ||
+                            input.MdVisualizeScreenPlotType == 'violin' ||
+                            input.MdVisualizeScreenPlotType == 'density'",
+                            ns = ns,
+                            column(width = 2,
+                                   selectInput(ns("MdVisualizeScreenPlotLineType"),
+                                               "Line type",
+                                               choices = c("solid",
+                                                           "dashed",
+                                                           "dotted",
+                                                           "dashes and dots" = "dotdash",
+                                                           "long dashes" = "longdash",
+                                                           "mixed dashes" = "twodash"),
+                                               selected = "solid")))
         )
       ),
       
@@ -167,16 +186,6 @@ MdVisualizeScreenUI <- function(id) {
         
         fluidRow(
           column(width = 2,
-                 selectInput(ns("MdVisualizeScreenPlotGroupColorAxis"),
-                             "Split plot by grouping color",
-                             choices = "",
-                             selected = "")),
-          column(width = 2,
-                 selectInput(ns("MdVisualizeScreenPlotGroupSizeAxis"),
-                             "Split plot by grouping size",
-                             choices = "",
-                             selected = "")),
-          column(width = 2,
                  selectInput(ns("MdVisualizeScreenPlotGroupGridRowAxis"),
                              "Split plot by group vertically",
                              choices = "",
@@ -186,6 +195,20 @@ MdVisualizeScreenUI <- function(id) {
                              "Split plot by group horizontally",
                              choices = "",
                              selected = "")),
+          conditionalPanel("input.MdVisualizeScreenPlotType == 'line' || input.MdVisualizeScreenPlotType == 'point'",
+                           ns = ns,
+                           column(width = 2,
+                                  selectInput(ns("MdVisualizeScreenPlotGroupColorAxis"),
+                                              "Split plot by grouping color",
+                                              choices = "",
+                                              selected = "")),
+                           column(width = 2,
+                                  selectInput(ns("MdVisualizeScreenPlotGroupSizeAxis"),
+                                              "Split plot by grouping size",
+                                              choices = "",
+                                              selected = ""))
+                           )
+          
         )
       ),
 

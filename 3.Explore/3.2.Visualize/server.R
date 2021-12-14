@@ -71,6 +71,16 @@ MdVisualizeScreenServer <- function(id) {
       
       observeEvent(input$MdVisualizeScreenPlotType, {
         
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotGroupColorAxis",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotGroupSizeAxis",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+        
         if (input$MdVisualizeScreenPlotType %chin% c("density", "histogram", "dotplot")) {
           updateSelectInput(session,
                             inputId = "MdVisualizeScreenPlotAxisY",
@@ -116,7 +126,8 @@ MdVisualizeScreenServer <- function(id) {
                                                                    input$MdVisualizeScreenPlotGroupColorAxis,
                                                                    input$MdVisualizeScreenPlotGroupSizeAxis,
                                                                    input$MdVisualizeScreenPlotGroupGridRowAxis,
-                                                                   input$MdVisualizeScreenPlotGroupGridColAxis)
+                                                                   input$MdVisualizeScreenPlotGroupGridColAxis,
+                                                                   input$MdVisualizeScreenPlotColorBrew)
         if (!is.null(MdVisualizeScreenCurrentPlot)) {
           
           MdVisualizeScreenReactiveLstPlotIndicatorName <- paste0("MdVisualizeScreenPlot", MdVisualizeScreenReactiveLstPlotIndicatorVar)
@@ -145,7 +156,8 @@ MdVisualizeScreenServer <- function(id) {
             PlotGroupColorAxis = input$MdVisualizeScreenPlotGroupColorAxis,
             PlotGroupSizeAxis = input$MdVisualizeScreenPlotGroupSizeAxis,
             PlotGroupGridRowAxis = input$MdVisualizeScreenPlotGroupGridRowAxis,
-            PlotGroupGridColAxis = input$MdVisualizeScreenPlotGroupGridColAxis
+            PlotGroupGridColAxis = input$MdVisualizeScreenPlotGroupGridColAxis,
+            PlotColorBrew = input$MdVisualizeScreenPlotColorBrew
           )
             
           MdVisualizeScreenReactiveLstPlotIndicatorVar <<- MdVisualizeScreenReactiveLstPlotIndicatorVar + 1
