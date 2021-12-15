@@ -88,11 +88,103 @@ MdVisualizeScreenServer <- function(id) {
                             selected = "")
         }
       })
-        
+      
       #####
       # UPDATE WHEN RESET BUTTON IS TRIGGERED
       #####
+      observeEvent(input$MdVisualizeScreenResetPlotBtn, {
         
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotType",
+                          selected = "point")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotBoxSize",
+                          selected = "normal")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotAxisX",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = MdVisualizeScreenCurrentDatasetColumnNameSelected())
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotAxisY",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+        
+        updateColourInput(session,
+                          inputId = "MdVisualizeScreenPlotColor",
+                          value = "black")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotColorBrew",
+                          selected = "Set1")
+        
+        updateNumericInput(session,
+                           inputId = "MdVisualizeScreenPlotSize",
+                           value = 1)
+        
+        updateSliderInput(session,
+                          inputId = "MdVisualizeScreenPlotOpacity",
+                          value = 1)
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotTheme",
+                          selected = "gray")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotPointShape",
+                          selected = 19)
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotLineType",
+                          selected = "solid")
+        
+        updateTextInput(session,
+                        inputId = "MdVisualizeScreenPlotAxisXName",
+                        value = input$MdVisualizeScreenPlotAxisX)
+        
+        updateTextInput(session,
+                        inputId = "MdVisualizeScreenPlotAxisYName",
+                        value = input$MdVisualizeScreenPlotAxisY)
+        
+        updateTextInput(session,
+                        inputId = "MdVisualizeScreenPlotTitle",
+                        value = "")
+        
+        updateNumericInput(session,
+                           inputId = "MdVisualizeScreenPlotFontSize",
+                           value = 11)
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotSecondaryLine",
+                          selected = "")
+        
+        updateSliderInput(session,
+                          inputId = "MdVisualizeScreenPlotSecondaryLineQuantileProb",
+                          value = c(0.25, 0.75))
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotGroupColorAxis",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotGroupSizeAxis",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotGroupGridRowAxis",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+        
+        updateSelectInput(session,
+                          inputId = "MdVisualizeScreenPlotGroupGridColAxis",
+                          choices = MdVisualizeScreenCurrentDatasetColumnNames(),
+                          selected = "")
+      }) 
+      
       #####
       # ADD BOX WITH PLOT WHEN CREATE BUTTON IS TRIGGERED
       #####
@@ -184,9 +276,9 @@ MdVisualizeScreenServer <- function(id) {
           
         })
         
-        #####
-        # CHANGE PLOT
-        #####
+      #####
+      # CHANGE PLOT
+      #####
         
     }
   )

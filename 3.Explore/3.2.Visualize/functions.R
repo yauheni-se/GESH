@@ -61,7 +61,7 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
   
   if (PlotGroupSizeAxis != "") {
     UsedVars <- c(UsedVars, PlotGroupSizeAxis)
-    show_toast("Currently unable to customize size as grouping was used", type = "warning", position = "top-end", timer = 6000)
+    show_toast("Unable to customize size as grouping was used", type = "warning", position = "top-end", timer = 6000)
   } else {
     PlotGroupSizeAxis <- NULL
   }
@@ -88,14 +88,14 @@ FnVisualizeScreenBuildPlot <- function(Dataset,
   
   if (PlotType %chin% c("point", "line", "violin", "area", "col", "boxplot")) {
     if (!class(pull(Dataset, PlotAxisY)[1]) %chin% c("numeric", "integer")) {
-      show_toast("Y variable must be numeric", type = "warning", position = "top-end", timer = 6000)
+      show_toast("Y variable must be numeric", type = "error", position = "top-end", timer = 6000)
       return()
     }
   }
   
   if (PlotType %chin% c("point", "density", "dotplot")) {
     if (!class(pull(Dataset, PlotAxisX)[1]) %chin% c("numeric", "integer")) {
-      show_toast("X variable must be numeric", type = "warning", position = "top-end", timer = 6000)
+      show_toast("X variable must be numeric", type = "error", position = "top-end", timer = 6000)
       return()
     }
   }
