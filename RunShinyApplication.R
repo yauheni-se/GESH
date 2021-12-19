@@ -30,6 +30,7 @@ ui <- tagList(dashboardPage(
   ),
   
   dashboardBody(
+    useShinyjs(),
     tabItems(
       # here will be 8 ui modules
       MdImportScreenUI("Import"),

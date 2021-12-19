@@ -3,6 +3,8 @@ MdVisualizeScreenServer <- function(id) {
     id,
     function(input, output, session) {
       ns <- session$ns
+      hide("MdVisualizeScreenEditPlotBtn")
+      hide("MdVisualizeScreenCreateUndoEditBtn")
 
       #####
       # UPDATE INPUT SETTINGS WHEN NEW DATASET IS UPLOADED / SELECTED
@@ -222,18 +224,31 @@ MdVisualizeScreenServer <- function(id) {
                                                                    input$MdVisualizeScreenPlotColorBrew)
         if (!is.null(MdVisualizeScreenCurrentPlot)) {
           
-          MdVisualizeScreenReactiveLstPlotIndicatorName <- paste0("MdVisualizeScreenPlot", MdVisualizeScreenReactiveLstPlotIndicatorVar)
+          MdVisualizeScreenReactiveLstPlotIndicatorName <- paste0("MdVisualizeScreenPlot",
+                                                                  MdVisualizeScreenReactiveLstPlotIndicatorVar)
+          
+          MdVisualizeScreenReactiveLstEditBtnIndicatorName <- paste0("MdVisualizeScreenEditBtn",
+                                                                     MdVisualizeScreenReactiveLstPlotIndicatorVar)
+          
+          MdVisualizeScreenReactiveLstDeleteBtnIndicatorName <- paste0("MdVisualizeScreenDeleteBtn",
+                                                                       MdVisualizeScreenReactiveLstPlotIndicatorVar)
           
           output[[MdVisualizeScreenReactiveLstPlotIndicatorName]] <- renderPlotly(MdVisualizeScreenCurrentPlot)
-            
-          MdVisualizeScreenPlotReactiveLst$Plot[[MdVisualizeScreenReactiveLstPlotIndicatorVar]] <- MdVisualizeScreenCurrentPlot
-            
-          MdVisualizeScreenPlotReactiveLst$Configuration[[MdVisualizeScreenReactiveLstPlotIndicatorVar]] <- data.table(
-            Dataset = MdVisualizeScreenCurrentDataset(),
+          
+          MdVisualizeScreenPlotReactiveLst$Plot[[paste0("Plot", MdVisualizeScreenReactiveLstPlotIndicatorVar)]] <-
+            MdVisualizeScreenCurrentPlot
+          
+          MdVisualizeScreenPlotReactiveLst$Dataset[[paste0("Dataset", MdVisualizeScreenReactiveLstPlotIndicatorVar)]] <-
+            MdVisualizeScreenCurrentDataset()
+          
+          MdVisualizeScreenPlotReactiveLst$Configuration[[paste0("Config", MdVisualizeScreenReactiveLstPlotIndicatorVar)]] <- data.table(
+            PlotDatasetName = input$MdVisualizeScreenSelectDataset,
             PlotType = input$MdVisualizeScreenPlotType,
+            PlotBoxSize = input$MdVisualizeScreenPlotBoxSize,
             PlotAxisX = input$MdVisualizeScreenPlotAxisX,
             PlotAxisY = input$MdVisualizeScreenPlotAxisY,
             PlotColor = input$MdVisualizeScreenPlotColor,
+            PlotColorBrew = input$MdVisualizeScreenPlotColorBrew,
             PlotSize = input$MdVisualizeScreenPlotSize,
             PlotOpacity = input$MdVisualizeScreenPlotOpacity,
             PlotTheme = input$MdVisualizeScreenPlotTheme,
@@ -248,8 +263,7 @@ MdVisualizeScreenServer <- function(id) {
             PlotGroupColorAxis = input$MdVisualizeScreenPlotGroupColorAxis,
             PlotGroupSizeAxis = input$MdVisualizeScreenPlotGroupSizeAxis,
             PlotGroupGridRowAxis = input$MdVisualizeScreenPlotGroupGridRowAxis,
-            PlotGroupGridColAxis = input$MdVisualizeScreenPlotGroupGridColAxis,
-            PlotColorBrew = input$MdVisualizeScreenPlotColorBrew
+            PlotGroupGridColAxis = input$MdVisualizeScreenPlotGroupGridColAxis
           )
             
           MdVisualizeScreenReactiveLstPlotIndicatorVar <<- MdVisualizeScreenReactiveLstPlotIndicatorVar + 1
@@ -266,6 +280,25 @@ MdVisualizeScreenServer <- function(id) {
                             collapsible = TRUE,
                             width = MdVisualizeScreenPlotBoxWidth,
                             fluidRow(
+                              column(width = 1,
+                                     offset = 10,
+                                     actionBttn(ns(MdVisualizeScreenReactiveLstEditBtnIndicatorName),
+                                                label = "",
+                                                icon = icon("cogs"),
+                                                style = "minimal",
+                                                color = "warning",
+                                                block = TRUE)),
+                              column(width = 1,
+                                     actionBttn(ns(MdVisualizeScreenReactiveLstDeleteBtnIndicatorName),
+                                                label = "",
+                                                icon = icon("trash-alt"),
+                                                style = "minimal",
+                                                color = "danger",
+                                                block = TRUE)),
+                            ),
+                            
+                            br(),
+                            fluidRow(
                               column(width = 12,
                                      plotlyOutput(ns(MdVisualizeScreenReactiveLstPlotIndicatorName)))
                               )
@@ -277,9 +310,178 @@ MdVisualizeScreenServer <- function(id) {
         })
         
       #####
-      # CHANGE PLOT
+      # EDIT PLOT
       #####
+      
+      observe({
         
+        MdVisualizeScreenPlotEditBtnLogicalInduces <- vapply(names(input),
+                                                             grepl,
+                                                             pattern = "MdVisualizeScreenEditBtn",
+                                                             FUN.VALUE = logical(1))
+        # proceed only if any edit btts exist:
+        if (any(MdVisualizeScreenPlotEditBtnLogicalInduces)) {
+          MdVisualizeScreenPlotEditBtnNames <- names(input)[MdVisualizeScreenPlotEditBtnLogicalInduces]
+          
+          MdVisualizeScreenPlotDeleteBtnLogicalInduces <- vapply(names(input),
+                                                                 grepl,
+                                                                 pattern = "MdVisualizeScreenDeleteBtn",
+                                                                 FUN.VALUE = logical(1))
+          MdVisualizeScreenPlotDeleteBtnNames <- names(input)[MdVisualizeScreenPlotDeleteBtnLogicalInduces]
+          
+          for (i in MdVisualizeScreenPlotEditBtnNames) {
+            onclick(i, {
+              
+              # hide all edit and delete buttons
+              for (j in MdVisualizeScreenPlotEditBtnNames) {
+                hide(j)
+              }
+              for (k in MdVisualizeScreenPlotDeleteBtnNames) {
+                hide(k)
+              }
+              
+              hide("MdVisualizeScreenCreatePlotBtn")
+              #hide("MdVisualizeScreenPlotBoxSize")
+              
+              show("MdVisualizeScreenEditPlotBtn")
+              show("MdVisualizeScreenCreateUndoEditBtn")
+              
+              #####
+              # UPDATING INPUTS
+              #####
+              
+              MdVisualizeScreenCurrentPlotEditId <- substr(i, nchar(i), nchar(i))
+              
+              MdVisualizeScreenCurrentPlotConfigurationEdit <-
+                MdVisualizeScreenPlotReactiveLst$Configuration[[paste0("Config", MdVisualizeScreenCurrentPlotEditId)]]
+              
+              MdVisualizeScreenCurrentPlotDatasetEdit <- 
+                MdVisualizeScreenPlotReactiveLst$Dataset[[paste0("Dataset", MdVisualizeScreenCurrentPlotEditId)]]
+              
+              MdVisualizeScreenCurrentPlotDatasetEditColumnNames <- names(MdVisualizeScreenCurrentPlotDatasetEdit)
+            
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenSelectDataset",
+                                #choices = names(GlobalReactiveLst$ImportedDatasets),
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotDatasetName[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotType",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotType[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotBoxSize",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotBoxSize[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotAxisX",
+                                choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotAxisX[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotAxisY",
+                                choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotAxisY[1])
+              
+              updateColourInput(session,
+                                inputId = "MdVisualizeScreenPlotColor",
+                                value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotColor[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotColorBrew",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotColorBrew[1])
+              
+              updateNumericInput(session,
+                                 inputId = "MdVisualizeScreenPlotSize",
+                                 value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotSize[1])
+              
+              updateSliderInput(session,
+                                inputId = "MdVisualizeScreenPlotOpacity",
+                                value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotOpacity[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotTheme",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotTheme[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotPointShape",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotPointShape[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotLineType",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotLineType[1])
+              
+              updateTextInput(session,
+                              inputId = "MdVisualizeScreenPlotAxisXName",
+                              value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotAxisXName[1])
+              
+              updateTextInput(session,
+                              inputId = "MdVisualizeScreenPlotAxisYName",
+                              value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotAxisYName[1])
+              
+              updateTextInput(session,
+                              inputId = "MdVisualizeScreenPlotTitle",
+                              value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotTitle[1])
+              
+              updateNumericInput(session,
+                                 inputId = "MdVisualizeScreenPlotFontSize",
+                                 value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotFontSize[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotSecondaryLine",
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotSecondaryLine[1])
+              
+              updateSliderInput(session,
+                                inputId = "MdVisualizeScreenPlotSecondaryLineQuantileProb",
+                                value = c(MdVisualizeScreenCurrentPlotConfigurationEdit$PlotSecondaryLineQuantileProb[1],
+                                          MdVisualizeScreenCurrentPlotConfigurationEdit$PlotSecondaryLineQuantileProb[2]))
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotGroupColorAxis",
+                                choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotGroupColorAxis[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotGroupSizeAxis",
+                                choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$GroupSizeAxis[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotGroupGridRowAxis",
+                                choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotGroupGridRowAxis[1])
+              
+              updateSelectInput(session,
+                                inputId = "MdVisualizeScreenPlotGroupGridColAxis",
+                                choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotGroupGridColAxis[1])
+              print(MdVisualizeScreenCurrentPlotConfigurationEdit)
+            })
+          }
+        }
+
+        # when clicking on any edit button:
+        # extract its ID number
+        # update configuration in the input$ using observeEvent to that related to that ID in reactive list;
+            
+        # when clicking undo:
+        # show/hide buttons again (both on graphs and on the very plot config screen)
+        # load the previous state of inputs
+        
+        # when clicking edit:
+        # update plot on the existing box
+        # update reactive list
+        # show/hide buttons again (both on graphs and on the very plot config screen)
+        # load the previous state of inputs
+      })
+      
+      #####
+      # DELETE PLOT
+      #####
+      
+      #####
+      # SAVE PLOTS
+      #####
     }
   )
 }
