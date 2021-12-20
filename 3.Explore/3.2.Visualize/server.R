@@ -310,18 +310,18 @@ MdVisualizeScreenServer <- function(id) {
         })
         
       #####
-      # CLICKING ANY OF COGS ON THE PLOT:
+      # CLICKING ANY OF COGS ON THE PLOT
       #####
       
       observe({
-        
+        cat("observe begin", "\n")
         MdVisualizeScreenPlotEditBtnLogicalInduces <- vapply(names(input),
                                                              grepl,
                                                              pattern = "MdVisualizeScreenEditBtn",
                                                              FUN.VALUE = logical(1))
         # proceed only if any edit btts exist:
         if (any(MdVisualizeScreenPlotEditBtnLogicalInduces)) {
-          
+          cat("save config before edit", "\n")
           # save the state of inputs before editing:
           MdVisualizeScreenInputsBeforeEdit <<- data.table(
             PlotDatasetName = isolate(input$MdVisualizeScreenSelectDataset),
@@ -357,8 +357,9 @@ MdVisualizeScreenServer <- function(id) {
           MdVisualizeScreenPlotDeleteBtnNames <<- names(input)[MdVisualizeScreenPlotDeleteBtnLogicalInduces]
           
           for (i in MdVisualizeScreenPlotEditBtnNames) {
+            
             onclick(i, {
-              
+              cat("at least one cog clicked", "\n")
               # hide all edit and delete buttons
               for (j in MdVisualizeScreenPlotEditBtnNames) {
                 hide(j)
@@ -377,11 +378,12 @@ MdVisualizeScreenServer <- function(id) {
               # UPDATING INPUTS
               #####
               
-              MdVisualizeScreenCurrentPlotEditId <<- substr(i, nchar(i), nchar(i))
-              
+              MdVisualizeScreenCurrentPlotEditId <<- str_extract(i, "MdVisualizeScreenEditBtn[0-9]") %>% substr(., nchar(.), nchar(.))
+              print(i)
+              cat("updating inputs to that one assigned to the button", "\n")
               MdVisualizeScreenCurrentPlotConfigurationEdit <-
                 MdVisualizeScreenPlotReactiveLst$Configuration[[paste0("Config", MdVisualizeScreenCurrentPlotEditId)]]
-              
+              print(MdVisualizeScreenCurrentPlotEditId)
               MdVisualizeScreenCurrentPlotDatasetEdit <- 
                 MdVisualizeScreenPlotReactiveLst$Dataset[[paste0("Dataset", MdVisualizeScreenCurrentPlotEditId)]]
               
@@ -492,6 +494,7 @@ MdVisualizeScreenServer <- function(id) {
       #####
       
       observeEvent(input$MdVisualizeScreenCreateUndoEditBtn, {
+        cat("clicking cancel edit button", "\n")
         for (j in MdVisualizeScreenPlotEditBtnNames) {
           show(j)
         }
@@ -605,7 +608,7 @@ MdVisualizeScreenServer <- function(id) {
       #####
       
       observeEvent(input$MdVisualizeScreenEditPlotBtn, {
-        
+        cat("clicking edit button", "\n")
         MdVisualizeScreenCurrentPlot <- FnVisualizeScreenBuildPlot(MdVisualizeScreenCurrentDataset(),
                                                                    input$MdVisualizeScreenPlotType,
                                                                    input$MdVisualizeScreenPlotAxisX,
@@ -785,6 +788,7 @@ MdVisualizeScreenServer <- function(id) {
       # DELETE PLOT
       #####
       
+      # To Do list:
       # main construction as in edit(observeonclick..)
       # update reactive list
       # removeUI
@@ -793,7 +797,8 @@ MdVisualizeScreenServer <- function(id) {
       # SAVE PLOTS
       #####
       
-      # render all plots in rmarkdown
+      # To Do list:
+      # render all plots from globallist in rmarkdown (use width for columns)
       # save this Rmd using downloadhandler
     }
   )
