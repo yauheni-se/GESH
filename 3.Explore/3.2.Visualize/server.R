@@ -276,7 +276,9 @@ MdVisualizeScreenServer <- function(id) {
           insertUI(selector = "#MdVisualizeScreenBoxPlotPlaceholder",
                    where = "afterBegin",
                    session = session,
-                   ui = box(title = "",
+                   ui = box(id = paste0("MdVisualizeScreenPlotBox",
+                                        MdVisualizeScreenReactiveLstPlotIndicatorVar-1),
+                            title = "",
                             status = "primary",
                             solidHeader = TRUE,
                             collapsible = TRUE,
@@ -314,7 +316,9 @@ MdVisualizeScreenServer <- function(id) {
       #####
       # CLICKING ANY OF COGS IN THE PLOTS
       #####
-      MdVisualizeScreenOldBtnValues <<- list()
+      MdVisualizeScreenOldEditBtnValues <<- list()
+      MdVisualizeScreenOldDeleteBtnValues <<- list()
+      
       observe({
         MdVisualizeScreenPlotEditBtnLogicalInduces <- vapply(names(input),
                                                              grepl,
@@ -330,6 +334,43 @@ MdVisualizeScreenServer <- function(id) {
                                                                  pattern = "MdVisualizeScreenDeleteBtn",
                                                                  FUN.VALUE = logical(1))
           MdVisualizeScreenPlotDeleteBtnNames <<- names(input)[MdVisualizeScreenPlotDeleteBtnLogicalInduces]
+          
+          #####
+          # WHEN TRASH BUTTON TRIGGERED
+          #####
+          
+          for (i in MdVisualizeScreenPlotDeleteBtnNames) {
+            
+            MdVisualizeScreenNewDeleteBtnValue <- input[[i]]
+            
+            if (is.null(MdVisualizeScreenOldDeleteBtnValues[[i]])) {
+              MdVisualizeScreenOldDeleteBtnValues[[i]] <<- 0
+            }
+            
+            if (MdVisualizeScreenNewDeleteBtnValue != MdVisualizeScreenOldDeleteBtnValues[[i]]) {
+              cat("condition fullfilled\n")
+              MdVisualizeScreenOldDeleteBtnValues[[i]] <<- MdVisualizeScreenOldDeleteBtnValues[[i]] + as.integer(input[[i]])
+            
+              
+                cat("observer entered\n")
+                MdVisualizeScreenCurrentPlotDeleteId <<- str_extract(i, "MdVisualizeScreenDeleteBtn[0-9]") %>%
+                  substr(., nchar(.), nchar(.))
+                print(names(input))
+                removeUI(paste0("#MdVisualizeScreenPlotBox", MdVisualizeScreenCurrentPlotDeleteId))
+                #hide(paste0("MdVisualizeScreenPlotBox", MdVisualizeScreenCurrentPlotDeleteId))
+                MdVisualizeScreenPlotReactiveLst$Plot[[paste0("Plot", MdVisualizeScreenCurrentPlotDeleteId)]] <- NULL
+              
+                MdVisualizeScreenPlotReactiveLst$Dataset[[paste0("Dataset", MdVisualizeScreenCurrentPlotDeleteId)]] <- NULL
+              
+                MdVisualizeScreenPlotReactiveLst$Configuration[[paste0("Config", MdVisualizeScreenCurrentPlotDeleteId)]] <- NULL
+              
+              
+            }
+          }
+          
+          #####
+          # WHEN COG BUTTON TRIGGERED
+          #####
           
           # save the state of inputs before editing:
           MdVisualizeScreenInputsBeforeEdit <<- data.table(
@@ -358,20 +399,17 @@ MdVisualizeScreenServer <- function(id) {
           )
           
           for (i in MdVisualizeScreenPlotEditBtnNames) {
-            #onclick(i    #observeEvent(input[[i]]
-            MdVisualizeScreenNewBtnValue <- input[[i]]
             
-            cat("newvalue\n")
-            print(MdVisualizeScreenNewBtnValue)
-            cat("oldvalue\n")
-            print(MdVisualizeScreenOldBtnValues[[i]])
+            MdVisualizeScreenNewEditBtnValue <- input[[i]]
             
-            if (is.null(MdVisualizeScreenOldBtnValues[[i]])) {
-              MdVisualizeScreenOldBtnValues[[i]] <<- 0
+            if (is.null(MdVisualizeScreenOldEditBtnValues[[i]])) {
+              MdVisualizeScreenOldEditBtnValues[[i]] <<- 0
             }
-            if (MdVisualizeScreenNewBtnValue != MdVisualizeScreenOldBtnValues[[i]]) {
+            
+            if (MdVisualizeScreenNewEditBtnValue != MdVisualizeScreenOldEditBtnValues[[i]]) {
               
-              MdVisualizeScreenOldBtnValues[[i]] <<- MdVisualizeScreenOldBtnValues[[i]] + 1
+              MdVisualizeScreenOldEditBtnValues[[i]] <<- MdVisualizeScreenOldEditBtnValues[[i]] + as.integer(input[[i]])
+
               observeEvent(input[[i]], {
               
               # hide all edit and delete buttons
@@ -499,7 +537,7 @@ MdVisualizeScreenServer <- function(id) {
                                 selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotGroupGridColAxis[1])
               })
               break
-            }#)
+            }
           }
 
         }
