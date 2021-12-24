@@ -249,12 +249,12 @@ MdVisualizeScreenUI <- function(id) {
     fluidRow(
       column(width = 4,
              offset = 4,
-             actionBttn(ns("MdVisualizeScreenSavePlotBtn"),
-                        label = "Export plots",
-                        icon = icon("file-download"),
-                        style = "jelly",
-                        color = "primary",
-                        block = TRUE))),
+             downloadBttn(ns("MdVisualizeScreenSavePlotBtn"),
+                          label = "Export plots",
+                          style = "jelly",
+                          color = "primary",
+                          block = TRUE)
+             )),
     br(),
     fluidRow(id = "MdVisualizeScreenBoxPlotPlaceholder")
   )

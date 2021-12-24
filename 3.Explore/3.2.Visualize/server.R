@@ -314,7 +314,7 @@ MdVisualizeScreenServer <- function(id) {
         })
         
       #####
-      # CLICKING ANY OF COGS IN THE PLOTS
+      # CLICKING ANY OF COGS / TRASHES IN THE PLOTS
       #####
       MdVisualizeScreenOldEditBtnValues <<- list()
       MdVisualizeScreenOldDeleteBtnValues <<- list()
@@ -839,17 +839,20 @@ MdVisualizeScreenServer <- function(id) {
 
       
       #####
-      # CLICKING ANY OF TRASHES IN THE PLOTS
-      #####
-      
-      # To Do list:
-      # main construction as in edit(observeonclick..)
-      # update reactive list
-      # removeUI
-      
-      #####
       # CLICKING SAVE PLOTS
       #####
+      
+      output$MdVisualizeScreenSavePlotBtn <- 
+      downloadHandler(
+        filename = function() {
+          paste0("GESH_graphs_", Sys.Date(), ".html")
+        },
+        content = function(file) {
+          Plots <- MdVisualizeScreenPlotReactiveLst$Plot
+          Configs <- MdVisualizeScreenPlotReactiveLst$Configuration
+          rmarkdown::render("./3.Explore/3.2.Visualize/rmarkdown.Rmd", output_file = file)
+        }
+      )
       
       # To Do list:
       # render all plots from globallist in rmarkdown (use width for columns)
