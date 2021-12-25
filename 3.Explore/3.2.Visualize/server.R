@@ -850,6 +850,8 @@ MdVisualizeScreenServer <- function(id) {
         content = function(file) {
           Plots <- MdVisualizeScreenPlotReactiveLst$Plot
           Configs <- MdVisualizeScreenPlotReactiveLst$Configuration
+          print(Plots[["Plot1"]])
+          cat("shto?")
           rmarkdown::render("./3.Explore/3.2.Visualize/rmarkdown.Rmd", output_file = file)
         }
       )
