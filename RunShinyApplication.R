@@ -4,7 +4,11 @@ rm(list = ls())
 
 Subscripts <- as.list(list.files(path = ".", recursive = TRUE))
 for (i in Subscripts) {
-  if (!i %in% c("README.md", "text.txt", "RunShinyApplication.R", "3.Explore/3.2.Visualize/rmarkdown.Rmd")) {
+  if (!i %in% c("README.md",
+                "text.txt",
+                "RunShinyApplication.R",
+                "3.Explore/3.2.Visualize/rmarkdown.Rmd",
+                "3.Explore/3.2.Visualize/rmarkdown_child.Rmd")) {
     source(i)
   }
 }

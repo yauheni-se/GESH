@@ -1,4 +1,5 @@
 ---
+output: html_document
 title: "<center>Plots"
 always_allow_html: true
 ---
@@ -7,15 +8,20 @@ always_allow_html: true
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
+```{r Child inclusion, eval=FALSE, include=FALSE, child='rmarkdown_child.Rmd'}
+```
 
 ```{r Plots, include=FALSE}
 out <- NULL
-for (i in names(Plots)) {
-  PlotId <- substr(i, nchar(i), nchar(i))
-  Plot <- Plots[[i]]
-  PlotBoxWidth <- switch(Configs[[paste0("Config", PlotId)]]$PlotBoxSize[1], "large" = 12, "big" = 9, "normal" = 6, "small" = 3)
-  out <<- c(out, knit_child(input = 'rmarkdown_child.Rmd', envir = environment()))
+PlotBoxWidth <- NULL
+
+for (i in names(Configs)) {
+  PlotBoxWidth[[i]] <- switch(Configs[[i]]$PlotBoxSize[1], "large" = 12, "big" = 9, "normal" = 6, "small" = 3)
 }
+
+mapply(function(Plot, PlotBoxWidth) {
+  out <<- c(out, knit_child(input = 'rmarkdown_child.Rmd', envir = environment()))
+}, Plot = Plots, PlotBoxWidth = PlotBoxWidth)
 ```
 
 `r paste(out, collapse = "\n")`

@@ -850,15 +850,9 @@ MdVisualizeScreenServer <- function(id) {
         content = function(file) {
           Plots <- MdVisualizeScreenPlotReactiveLst$Plot
           Configs <- MdVisualizeScreenPlotReactiveLst$Configuration
-          print(Plots[["Plot1"]])
-          cat("shto?")
           rmarkdown::render("./3.Explore/3.2.Visualize/rmarkdown.Rmd", output_file = file)
         }
       )
-      
-      # To Do list:
-      # render all plots from globallist in rmarkdown (use width for columns)
-      # save this Rmd using downloadhandler
     }
   )
 }
