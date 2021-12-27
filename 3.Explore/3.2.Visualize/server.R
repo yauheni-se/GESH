@@ -7,7 +7,7 @@ MdVisualizeScreenServer <- function(id) {
       hide("MdVisualizeScreenCreateUndoEditBtn")
 
       #####
-      # UPDATE INPUTS WHEN NEW DATASET IS UPLOADED / SELECTED
+      # UPDATE INPUTS WHEN A NEW DATASET IS UPLOADED / SELECTED
       #####
       
       MdVisualizeScreenTriggerDataset <- reactive({GlobalReactiveLst$ImportedDatasets[[names(GlobalReactiveLst$ImportedDatasets)[1]]]}) 
@@ -94,7 +94,7 @@ MdVisualizeScreenServer <- function(id) {
       })
       
       #####
-      # UPDATE INPUTS WHEN RESET BUTTON IS TRIGGERED
+      # CLICKING RESET BUTTON
       #####
       observeEvent(input$MdVisualizeScreenResetPlotBtn, {
         
@@ -190,7 +190,7 @@ MdVisualizeScreenServer <- function(id) {
       }) 
       
       #####
-      # ADD BOX WITH PLOT WHEN CREATE BUTTON IS TRIGGERED
+      # CLICKING CREATE BUTTON
       #####
         
       MdVisualizeScreenReactiveLstPlotIndicatorVar <- 1
@@ -260,7 +260,7 @@ MdVisualizeScreenServer <- function(id) {
             PlotAxisYName = input$MdVisualizeScreenPlotAxisYName,
             PlotTitle = input$MdVisualizeScreenPlotTitle,
             PlotFontSize = input$MdVisualizeScreenPlotFontSize,
-            PlotSecondaryLines = input$MdVisualizeScreenPlotSecondaryLine,
+            PlotSecondaryLine = input$MdVisualizeScreenPlotSecondaryLine,
             PlotSecondaryLineQuantileProbs = input$MdVisualizeScreenPlotSecondaryLineQuantileProb,
             PlotGroupColorAxis = input$MdVisualizeScreenPlotGroupColorAxis,
             PlotGroupSizeAxis = input$MdVisualizeScreenPlotGroupSizeAxis,
@@ -314,7 +314,7 @@ MdVisualizeScreenServer <- function(id) {
         })
         
       #####
-      # CLICKING ANY OF COGS / TRASHES IN THE PLOTS
+      # CLICKING ANY COG / TRASH BUTTON IN THE PLOTS'S BOX
       #####
       MdVisualizeScreenOldEditBtnValues <<- list()
       MdVisualizeScreenOldDeleteBtnValues <<- list()
@@ -348,16 +348,14 @@ MdVisualizeScreenServer <- function(id) {
             }
             
             if (MdVisualizeScreenNewDeleteBtnValue != MdVisualizeScreenOldDeleteBtnValues[[i]]) {
-              cat("condition fullfilled\n")
+              
               MdVisualizeScreenOldDeleteBtnValues[[i]] <<- MdVisualizeScreenOldDeleteBtnValues[[i]] + as.integer(input[[i]])
             
-              
-                cat("observer entered\n")
                 MdVisualizeScreenCurrentPlotDeleteId <<- str_extract(i, "MdVisualizeScreenDeleteBtn[0-9]") %>%
                   substr(., nchar(.), nchar(.))
-                print(names(input))
+                
                 removeUI(paste0("#MdVisualizeScreenPlotBox", MdVisualizeScreenCurrentPlotDeleteId))
-                #hide(paste0("MdVisualizeScreenPlotBox", MdVisualizeScreenCurrentPlotDeleteId))
+                
                 MdVisualizeScreenPlotReactiveLst$Plot[[paste0("Plot", MdVisualizeScreenCurrentPlotDeleteId)]] <- NULL
               
                 MdVisualizeScreenPlotReactiveLst$Dataset[[paste0("Dataset", MdVisualizeScreenCurrentPlotDeleteId)]] <- NULL
@@ -390,7 +388,7 @@ MdVisualizeScreenServer <- function(id) {
             PlotAxisYName = isolate(input$MdVisualizeScreenPlotAxisYName),
             PlotTitle = isolate(input$MdVisualizeScreenPlotTitle),
             PlotFontSize = isolate(input$MdVisualizeScreenPlotFontSize),
-            PlotSecondaryLines = isolate(input$MdVisualizeScreenPlotSecondaryLine),
+            PlotSecondaryLine = isolate(input$MdVisualizeScreenPlotSecondaryLine),
             PlotSecondaryLineQuantileProbs = isolate(input$MdVisualizeScreenPlotSecondaryLineQuantileProb),
             PlotGroupColorAxis = isolate(input$MdVisualizeScreenPlotGroupColorAxis),
             PlotGroupSizeAxis = isolate(input$MdVisualizeScreenPlotGroupSizeAxis),
@@ -405,10 +403,14 @@ MdVisualizeScreenServer <- function(id) {
             if (is.null(MdVisualizeScreenOldEditBtnValues[[i]])) {
               MdVisualizeScreenOldEditBtnValues[[i]] <<- 0
             }
-            
-            if (MdVisualizeScreenNewEditBtnValue != MdVisualizeScreenOldEditBtnValues[[i]]) {
+            cat(i, "current name\n")
+            print(MdVisualizeScreenNewEditBtnValue)
+            cat("new value\n")
+            print(MdVisualizeScreenOldEditBtnValues[[i]])
+            cat("old value\n")
+            if (MdVisualizeScreenNewEditBtnValue > MdVisualizeScreenOldEditBtnValues[[i]]) {
               
-              MdVisualizeScreenOldEditBtnValues[[i]] <<- MdVisualizeScreenOldEditBtnValues[[i]] + as.integer(input[[i]])
+              MdVisualizeScreenOldEditBtnValues[[i]] <<- MdVisualizeScreenNewEditBtnValue
 
               observeEvent(input[[i]], {
               
@@ -509,7 +511,7 @@ MdVisualizeScreenServer <- function(id) {
               
               updateSelectInput(session,
                                 inputId = "MdVisualizeScreenPlotSecondaryLine",
-                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotSecondaryLine[1])
+                                selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotSecondaryLine)
               
               updateSliderInput(session,
                                 inputId = "MdVisualizeScreenPlotSecondaryLineQuantileProb",
@@ -544,7 +546,7 @@ MdVisualizeScreenServer <- function(id) {
       })
       
       #####
-      # CLICKING CANCEL EDITING
+      # CLICKING CANCEL EDITING BUTTON
       #####
       
       observeEvent(input$MdVisualizeScreenCreateUndoEditBtn, {
@@ -632,7 +634,7 @@ MdVisualizeScreenServer <- function(id) {
         
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotSecondaryLine",
-                          selected = MdVisualizeScreenInputsBeforeEdit$PlotSecondaryLine[1])
+                          selected = MdVisualizeScreenInputsBeforeEdit$PlotSecondaryLine)
         
         updateSliderInput(session,
                           inputId = "MdVisualizeScreenPlotSecondaryLineQuantileProb",
@@ -715,7 +717,7 @@ MdVisualizeScreenServer <- function(id) {
             PlotAxisYName = input$MdVisualizeScreenPlotAxisYName,
             PlotTitle = input$MdVisualizeScreenPlotTitle,
             PlotFontSize = input$MdVisualizeScreenPlotFontSize,
-            PlotSecondaryLines = input$MdVisualizeScreenPlotSecondaryLine,
+            PlotSecondaryLine = input$MdVisualizeScreenPlotSecondaryLine,
             PlotSecondaryLineQuantileProbs = input$MdVisualizeScreenPlotSecondaryLineQuantileProb,
             PlotGroupColorAxis = input$MdVisualizeScreenPlotGroupColorAxis,
             PlotGroupSizeAxis = input$MdVisualizeScreenPlotGroupSizeAxis,
@@ -810,7 +812,7 @@ MdVisualizeScreenServer <- function(id) {
           
           updateSelectInput(session,
                             inputId = "MdVisualizeScreenPlotSecondaryLine",
-                            selected = MdVisualizeScreenInputsBeforeEdit$PlotSecondaryLine[1])
+                            selected = MdVisualizeScreenInputsBeforeEdit$PlotSecondaryLine)
           
           updateSliderInput(session,
                             inputId = "MdVisualizeScreenPlotSecondaryLineQuantileProb",
@@ -839,7 +841,7 @@ MdVisualizeScreenServer <- function(id) {
 
       
       #####
-      # CLICKING SAVE PLOTS
+      # CLICKING EXPORT PLOTS BUTTON
       #####
       
       output$MdVisualizeScreenSavePlotBtn <- 

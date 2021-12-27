@@ -22,8 +22,8 @@ ui <- tagList(dashboardPage(
       menuItem("Import", tabName = "Import", icon = icon("upload")),
       menuItem("Modify", tabName = "Modify", icon = icon("wrench")),
       menuItem("Explore", tabName = "Explore", icon = icon("lightbulb"),
-               menuSubItem("Visualize", tabName = "Visualize", icon = icon("chart-bar")),
-               menuSubItem("Summary Statistics", tabName = "SummaryStatistics", icon = icon("search"))
+               menuSubItem("Summary Statistics", tabName = "SummaryStatistics", icon = icon("search")),
+               menuSubItem("Visualize", tabName = "Visualize", icon = icon("chart-bar"))
       ),
       menuItem("Model", tabName = "Model", icon = icon("layer-group")),
       menuItem("Test", tabName = "Test", icon = icon("vial")),
