@@ -285,20 +285,20 @@ MdVisualizeScreenServer <- function(id) {
                             width = MdVisualizeScreenPlotBoxWidth,
                             fluidRow(
                               column(width = 1,
-                                     offset = 10,
+                                     offset = 9,
                                      actionBttn(ns(MdVisualizeScreenReactiveLstEditBtnIndicatorName),
                                                 label = "",
                                                 icon = icon("cogs"),
                                                 style = "minimal",
                                                 color = "warning",
-                                                block = TRUE)),
+                                                block = FALSE)),
                               column(width = 1,
                                      actionBttn(ns(MdVisualizeScreenReactiveLstDeleteBtnIndicatorName),
                                                 label = "",
                                                 icon = icon("trash-alt"),
                                                 style = "minimal",
                                                 color = "danger",
-                                                block = TRUE)),
+                                                block = FALSE))
                             ),
                             
                             br(),
@@ -403,11 +403,7 @@ MdVisualizeScreenServer <- function(id) {
             if (is.null(MdVisualizeScreenOldEditBtnValues[[i]])) {
               MdVisualizeScreenOldEditBtnValues[[i]] <<- 0
             }
-            cat(i, "current name\n")
-            print(MdVisualizeScreenNewEditBtnValue)
-            cat("new value\n")
-            print(MdVisualizeScreenOldEditBtnValues[[i]])
-            cat("old value\n")
+            
             if (MdVisualizeScreenNewEditBtnValue > MdVisualizeScreenOldEditBtnValues[[i]]) {
               
               MdVisualizeScreenOldEditBtnValues[[i]] <<- MdVisualizeScreenNewEditBtnValue
