@@ -4,7 +4,11 @@ rm(list = ls())
 
 Subscripts <- as.list(list.files(path = ".", recursive = TRUE))
 for (i in Subscripts) {
-  if (!i %in% c("README.md", "text.txt", "RunShinyApplication.R")) {
+  if (!i %in% c("README.md",
+                "text.txt",
+                "RunShinyApplication.R",
+                "3.Explore/3.2.Visualize/rmarkdown.Rmd",
+                "3.Explore/3.2.Visualize/rmarkdown_child.Rmd")) {
     source(i)
   }
 }
@@ -17,7 +21,10 @@ ui <- tagList(dashboardPage(
     sidebarMenu(
       menuItem("Import", tabName = "Import", icon = icon("upload")),
       menuItem("Modify", tabName = "Modify", icon = icon("wrench")),
-      menuItem("Visualize", tabName = "Visualize", icon = icon("chart-bar")),
+      menuItem("Explore", tabName = "Explore", icon = icon("lightbulb"),
+               menuSubItem("Summary Statistics", tabName = "SummaryStatistics", icon = icon("search")),
+               menuSubItem("Visualize", tabName = "Visualize", icon = icon("chart-bar"))
+      ),
       menuItem("Model", tabName = "Model", icon = icon("layer-group")),
       menuItem("Test", tabName = "Test", icon = icon("vial")),
       menuItem("Predict", tabName = "Predict", icon = icon("chart-line")),
@@ -27,9 +34,11 @@ ui <- tagList(dashboardPage(
   ),
   
   dashboardBody(
+    useShinyjs(),
     tabItems(
       # here will be 8 ui modules
-      MdImportScreenUI("Import")
+      MdImportScreenUI("Import"),
+      MdVisualizeScreenUI("Visualize")
     )
   ),
   
@@ -40,6 +49,7 @@ ui <- tagList(dashboardPage(
 server <- function(input, output, session) {
   # here will be 8 server modules
   MdImportScreenServer("Import")
+  MdVisualizeScreenServer("Visualize")
 }
 
 shinyApp(ui, server)

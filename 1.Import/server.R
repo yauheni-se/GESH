@@ -1,7 +1,6 @@
 MdImportScreenServer <- function(id) {
   moduleServer(
     id,
-    ## Below is the module function
     function(input, output, session) {
       
       GlobalReactiveLst <<- reactiveValues()
@@ -20,13 +19,13 @@ MdImportScreenServer <- function(id) {
         MdImportScreenCurrentDatasetNameVar <- file_path_sans_ext(input$MdImportScreenImportFileSlct$name)
         
         # In case of any error in data import, current dataset will be set to NULL and toast message arises
-        MdImportScreenCurrentDataset <- FnImportScreenFileImport(input$MdImportScreenImportFileSlct$datapath,
-                                                                 file_ext(input$MdImportScreenImportFileSlct$datapath),
-                                                                 input$MdImportScreenImportFileFormatSlct,
-                                                                 input$MdImportScreenImportFileSeparatorSlct,
-                                                                 input$MdImportScreenImportFileDecimalSeparatorSlct,
-                                                                 input$MdImportScreenImportFileSheetSlct,
-                                                                 input$MdImportScreenImportFileRangeCellSlct)
+        MdImportScreenCurrentDataset <<- FnImportScreenFileImport(input$MdImportScreenImportFileSlct$datapath,
+                                                                  file_ext(input$MdImportScreenImportFileSlct$datapath),
+                                                                  input$MdImportScreenImportFileFormatSlct,
+                                                                  input$MdImportScreenImportFileSeparatorSlct,
+                                                                  input$MdImportScreenImportFileDecimalSeparatorSlct,
+                                                                  input$MdImportScreenImportFileSheetSlct,
+                                                                  input$MdImportScreenImportFileRangeCellSlct)
           
         # Condition not to add current dataset to the datasets list if it was NULL
         if (!is.null(MdImportScreenCurrentDataset)) {
@@ -37,13 +36,18 @@ MdImportScreenServer <- function(id) {
                          type = "warning",
                          position = "top-end",
                          timer = 6000)
+            
+            output$ImportScreenServerDatasetVisualizationTbl <- renderDataTable({
+              DT::datatable(isolate(MdImportScreenCurrentDataset),
+                            options = list(autoWidth = FALSE, scrollX = TRUE, scrollY = TRUE, pageLength = 6, lengthChange = FALSE))
+            })
+            
           } else {
             GlobalReactiveLst$ImportedDatasets[[GlobalReactiveLstDatasetIndicatorVar]] <<- MdImportScreenCurrentDataset
             
             names(GlobalReactiveLst$ImportedDatasets)[GlobalReactiveLstDatasetIndicatorVar] <- MdImportScreenCurrentDatasetNameVar
 
             output$ImportScreenServerDatasetVisualizationTbl <- renderDataTable({
-              req(input$MdImportScreenImportDataBtn)
               DT::datatable(isolate(MdImportScreenCurrentDataset),
               options = list(autoWidth = FALSE, scrollX = TRUE, scrollY = TRUE, pageLength = 6, lengthChange = FALSE))
             })
@@ -53,7 +57,7 @@ MdImportScreenServer <- function(id) {
       })
       
       observeEvent(input$MdImportScreenImportFileRangeCellBtn, {
-        updateTextAreaInput(session, inputId = "MdImportScreenImportFileRangeCellSlct", value = "")
+        updateTextInput(session, inputId = "MdImportScreenImportFileRangeCellSlct", value = "")
       })
     }
   )    

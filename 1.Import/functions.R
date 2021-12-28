@@ -55,7 +55,13 @@ FnImportScreenFileImport <- function(FileSlct,
     if (FileFormatReal =="txt") {
       fread(FileSlct, sep = "\t", dec = DecimalSeparatorSlct)
     } else {
-      fread(FileSlct, sep = FileSeparatorSlct, dec = DecimalSeparatorSlct)
+      if (FileSeparatorSlct == DecimalSeparatorSlct) {
+        show_toast("Decimal and list separator can not be the same", type = "error", position = "top-end", timer = 6000)
+        return()
+      } else {
+        fread(FileSlct, sep = FileSeparatorSlct, dec = DecimalSeparatorSlct)
+      }
+      
     }
     
   } else if (FileFormatSlct == "xlsx") {
