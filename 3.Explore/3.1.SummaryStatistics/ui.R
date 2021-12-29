@@ -1,0 +1,151 @@
+MdSummaryStatisticsScreenUI <- function(id) {
+  ns <- NS(id)
+  
+  tabItem(
+    tabName = "SummaryStatistics",
+    box(width = 12,
+        title = "Table configuration",
+        status = "primary",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+        box(
+          width = 12,
+          title = "Required settings",
+          status = "primary",
+          solidHeader = TRUE,
+          collapsible = TRUE,
+          fluidRow(
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsSelectDataset"),
+                               "Dataset",
+                               choices = "")),
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsTableBoxSize"),
+                               "Table box size",
+                               choices = c("large", "big", "normal", "small"),
+                               selected = "normal")),
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsTableColumns"),
+                               "Columns",
+                               choices = "",
+                               selected = "all")),
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsTableGroupingColumns"),
+                               "Grouping columns",
+                               choices = "",
+                               selected = "")),
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsTableStatitisticsTypes"),
+                               "Statistics",
+                               choices = c("mean",
+                                           "median",
+                                           "mode",
+                                           "maximum",
+                                           "minimum",
+                                           "variance",
+                                           "standard deviation",
+                                           "kurtosis",
+                                           "skewness",
+                                           "quantiles"),
+                               multiple = TRUE)),
+             column(width = 2,
+                    selectInput(ns("MdSummaryStatisticsTableDescriptivesTypes"),
+                                "Descriptives",
+                                choices = c("number of unique observations",
+                                            "number of empty observations",
+                                            "type of variable"),
+                                multiple = TRUE))
+            )
+        ),
+        
+        box(
+          width = 12,
+          title = "Appearance",
+          status = "primary",
+          solidHeader = TRUE,
+          collapsible = TRUE,
+          collapsed = TRUE,
+          fluidRow(
+            column(width = 2,
+                   colorPickr(ns("MdSummaryStatisticsTableColor"),
+                               "Background color")),
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsTableHeatmap"),
+                                  "Heatmap palette", 
+                                  choices = c("none"),
+                                  selected = "none"))
+          )
+        ),
+        
+        box(
+          width = 12,
+          title = "Advanced",
+          status = "primary",
+          solidHeader = TRUE,
+          collapsible = TRUE,
+          collapsed = TRUE,
+          fluidRow(
+            column(width = 2,
+                   selectInput(ns("MdSummaryStatisticsTableObservations"),
+                               "Observations used",
+                               choices = "",
+                               selected = "all")),
+            column(width = 2,
+                   textAreaInput(ns("MdSummaryStatisticsTableFilter"),
+                                 "Logical filter", 
+                                 placeholder = "(sex == 'female') & (income >= 10000) | (educ != 'tertiary')",
+                                 resize = "vertical")),
+            column(width = 2,
+                   textAreaInput(ns("MdSummaryStatisticsTableOwnStatistic"),
+                                 "Own statistic / descriptive", 
+                                 placeholder = "mean_income_weighted = mean(income)+3/2*log(age)",
+                                 resize = "vertical"))
+          )
+       ),
+       fluidRow(
+         column(width = 2,
+                actionBttn(ns("MdSummaryStatisticsCreateTableBtn"),
+                           label = "Create",
+                           icon = icon("tools"),
+                           style = "jelly",
+                           color = "success",
+                           block = TRUE),
+                actionBttn(ns("MdSummaryStatisticsEditTableBtn"),
+                           label = "Edit",
+                           icon = icon("edit"),
+                           style = "jelly",
+                           color = "success",
+                           block = TRUE)),
+         column(width = 2,
+                actionBttn(ns("MdSummaryStatisticsCreateUndoEditBtn"),
+                           label = "Cancel editing",
+                           icon = icon("undo"),
+                           style = "jelly",
+                           color = "warning",
+                           block = TRUE)),
+         
+         column(width = 2,
+                offset = 6,
+                actionBttn(ns("MdSummaryStatisticsResetTableBtn"),
+                           label = "Reset",
+                           icon = icon("eraser"),
+                           style = "jelly",
+                           color = "danger",
+                           block = TRUE))
+       )
+   ),
+   
+   fluidRow(
+     column(width = 4,
+            offset = 4,
+            downloadBttn(ns("MdSummaryStatisticsSaveTableBtn"),
+                         label = "Export plots",
+                         style = "jelly",
+                         color = "primary",
+                         block = TRUE))
+   ),
+   
+   br(),
+   fluidRow(id = "MdSummaryStatisticsBoxTablePlaceholder")
+ )
+}

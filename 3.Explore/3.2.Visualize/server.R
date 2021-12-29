@@ -116,9 +116,9 @@ MdVisualizeScreenServer <- function(id) {
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
                           selected = "")
         
-        updateColourInput(session,
-                          inputId = "MdVisualizeScreenPlotColor",
-                          value = "black")
+        updateColorPickr(session,
+                         inputId = "MdVisualizeScreenPlotColor",
+                         value = "black")
         
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotColorBrew",
@@ -461,9 +461,9 @@ MdVisualizeScreenServer <- function(id) {
                                 choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
                                 selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotAxisY[1])
               
-              updateColourInput(session,
-                                inputId = "MdVisualizeScreenPlotColor",
-                                value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotColor[1])
+              updateColorPickr(session,
+                               inputId = "MdVisualizeScreenPlotColor",
+                               value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotColor[1])
               
               updateSelectInput(session,
                                 inputId = "MdVisualizeScreenPlotColorBrew",
@@ -584,9 +584,9 @@ MdVisualizeScreenServer <- function(id) {
                           inputId = "MdVisualizeScreenPlotAxisY",
                           selected = MdVisualizeScreenInputsBeforeEdit$PlotAxisY[1])
         
-        updateColourInput(session,
-                          inputId = "MdVisualizeScreenPlotColor",
-                          value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
+        updateColorPickr(session,
+                         inputId = "MdVisualizeScreenPlotColor",
+                         value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
         
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotColorBrew",
@@ -762,9 +762,9 @@ MdVisualizeScreenServer <- function(id) {
                             inputId = "MdVisualizeScreenPlotAxisY",
                             selected = MdVisualizeScreenInputsBeforeEdit$PlotAxisY[1])
           
-          updateColourInput(session,
-                            inputId = "MdVisualizeScreenPlotColor",
-                            value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
+          updateColorPickr(session,
+                           inputId = "MdVisualizeScreenPlotColor",
+                           value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
           
           updateSelectInput(session,
                             inputId = "MdVisualizeScreenPlotColorBrew",

@@ -10,7 +10,7 @@ MdImportScreenUI <- function(id) {
       solidHeader = TRUE,
       fluidRow(
         column(width = 2,
-               selectInput(ns("MdImportScreenImportFileFormatSlct"), "Select file format",
+               selectInput(ns("MdImportScreenImportFileFormatSlct"), "File format",
                            choices = c("csv/txt" = "csv",
                                        "Excel" = "xlsx",
                                        "SPSS" = "sav",
@@ -19,7 +19,7 @@ MdImportScreenUI <- function(id) {
                                        "Gretl" = "gdt"))),
         column(width = 2,
                fileInput(ns("MdImportScreenImportFileSlct"),
-                         "Select file",
+                         "File",
                          accept = c(".csv", ".txt", ".gdt", ".xlsx", ".xls", ".sav", ".dta", ".sas7bdat"), #, ".tsv"
                          buttonLabel = "Browse.."))
       ),
@@ -54,7 +54,7 @@ MdImportScreenUI <- function(id) {
                                 conditionalPanel("input.MdImportScreenImportFileRangeCellBtn != 1",
                                                  ns = ns,
                                                  textInput(ns("MdImportScreenImportFileRangeCellSlct"),
-                                                           "Select range",
+                                                           "Data range",
                                                            placeholder = "A1:D4"))),
                          column(width = 2,
                                 sliderInput(ns("MdImportScreenImportFileSheetSlct"),
