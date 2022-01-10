@@ -11,13 +11,15 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
                                                 TableGroupingColumns,
                                                 TableStatitisticsTypes,
                                                 TableDescriptivesTypes,
-                                                TableColor,
-                                                TableHeatmap,
                                                 TableObservations,
                                                 TableFilter,
                                                 TableOwnStatistic,
                                                 TableUseGroupingColumnsWithDescriptives,
-                                                TableQuantilesVector) {
+                                                TableQuantilesVector,
+                                                TableColor,
+                                                TableTextColor,
+                                                TableHeader,
+                                                TableHeatmap) {
   #####
   # INTERNAL VARIABLES CREATION, RECODING, ERROR CHECKING
   #####
@@ -48,7 +50,17 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
       return()
     }
   }
-    
+  
+  if (TableObservations != "" & TableFilter != "") {
+    show_toast("Cannot filter both on logical condition and induces",
+               type = "error",
+               position = "top-end",
+               timer = 6000)
+    return()
+  }
+  
+  TableFilter <- ifelse(TableObservations != "", paste0("1:", TableObservations), TableFilter)
+  
   if (TableFilter != "") {
     TableFilterError <- tryCatch({
       Dataset[eval(parse(text = TableFilter)), ] 
@@ -66,7 +78,6 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
   
   
   TableOwnStatisticList <- unlist(str_split(TableOwnStatistic, ";"))
-  
   TableOwnStatisticColumns <- unlist(str_split(TableOwnStatisticList[2], ","))
   
   if (TableOwnStatistic != "") {
@@ -123,9 +134,7 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
                 position = "top-end",
                 timer = 6000)
   }
-    
-  #recode observations
-  #think about own statistics
+
     
   #####
   # TABLE WITH STATISTICS
@@ -396,12 +405,22 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
     
   colnames(TableMerged) <- str_replace(colnames(TableMerged), "rn", "variable name")
 
+  
   #####
   # CUSTOMIZE APPEARANCE
   #####
   
-  # add table color
   # add heatmap
-  # add properties as in Import screen so that fit inside the box
-  datatable(TableMerged)
+  datatable(TableMerged,
+            caption = TableHeader,
+            class = 'cell-border stripe',
+            rownames = FALSE,
+            extensions = 'Buttons',
+            options = list(dom = 'Bfrtip',
+                           buttons = list('copy', 'print', list(extend = 'collection',
+                                                                buttons = c('csv', 'excel', 'pdf'),
+                                                                text = 'Download')),
+                           autoWidth = FALSE, scrollX = TRUE, scrollY = TRUE, pageLength = 6, lengthChange = FALSE)
+  ) %>% 
+    formatStyle(columns = colnames(TableMerged), color = TableTextColor, background = TableColor)
 }
