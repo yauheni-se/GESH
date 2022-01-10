@@ -228,7 +228,7 @@ MdVisualizeScreenUI <- function(id) {
                           color = "success",
                           block = TRUE)),
         column(width = 2,
-               actionBttn(ns("MdVisualizeScreenCreateUndoEditBtn"),
+               actionBttn(ns("MdVisualizeScreenUndoEditBtn"),
                           label = "Cancel editing",
                           icon = icon("undo"),
                           style = "jelly",
@@ -250,7 +250,7 @@ MdVisualizeScreenUI <- function(id) {
       column(width = 4,
              offset = 4,
              downloadBttn(ns("MdVisualizeScreenSavePlotBtn"),
-                          label = "Export tables",
+                          label = "Export plots",
                           style = "jelly",
                           color = "primary",
                           block = TRUE)

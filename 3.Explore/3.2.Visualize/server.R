@@ -4,7 +4,7 @@ MdVisualizeScreenServer <- function(id) {
     function(input, output, session) {
       ns <- session$ns
       hide("MdVisualizeScreenEditPlotBtn")
-      hide("MdVisualizeScreenCreateUndoEditBtn")
+      hide("MdVisualizeScreenUndoEditBtn")
 
       #####
       # UPDATE INPUTS WHEN A NEW DATASET IS UPLOADED / SELECTED
@@ -422,7 +422,7 @@ MdVisualizeScreenServer <- function(id) {
               hide("MdVisualizeScreenPlotBoxSize")
               
               show("MdVisualizeScreenEditPlotBtn")
-              show("MdVisualizeScreenCreateUndoEditBtn")
+              show("MdVisualizeScreenUndoEditBtn")
               
               #####
               # UPDATING INPUTS
@@ -545,7 +545,7 @@ MdVisualizeScreenServer <- function(id) {
       # CLICKING CANCEL EDITING BUTTON
       #####
       
-      observeEvent(input$MdVisualizeScreenCreateUndoEditBtn, {
+      observeEvent(input$MdVisualizeScreenUndoEditBtn, {
         
         for (j in MdVisualizeScreenPlotEditBtnNames) {
           show(j)
@@ -558,7 +558,7 @@ MdVisualizeScreenServer <- function(id) {
         show("MdVisualizeScreenPlotBoxSize")
         
         hide("MdVisualizeScreenEditPlotBtn")
-        hide("MdVisualizeScreenCreateUndoEditBtn")
+        hide("MdVisualizeScreenUndoEditBtn")
         
         #####
         # LOAD PREVIOUS STATE OF INPUTS
@@ -736,7 +736,7 @@ MdVisualizeScreenServer <- function(id) {
           show("MdVisualizeScreenPlotBoxSize")
           
           hide("MdVisualizeScreenEditPlotBtn")
-          hide("MdVisualizeScreenCreateUndoEditBtn")
+          hide("MdVisualizeScreenUndoEditBtn")
           
           #####
           # LOAD PREVIOUS STATE OF INPUTS

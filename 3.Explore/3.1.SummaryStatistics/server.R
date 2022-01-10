@@ -4,7 +4,7 @@ MdSummaryStatisticsServer <- function(id) {
     function(input, output, session) {
       ns <- session$ns
       hide("MdSummaryStatisticsEditTableBtn")
-      hide("MdSummaryStatisticsCreateUndoEditBtn")
+      hide("MdSummaryStatisticsUndoEditBtn")
     }
   )
 }
