@@ -5,6 +5,11 @@ count_na <- function(x) {
 count_na_percentage <- function(x) {
   return(sum(is.na(x)) / length(x)  * 100)
 }
+
+find_mode <- function(x) {
+  UniqueValues <- na.omit(unique(x))
+  UniqueValues[which.max(tabulate(match(x, UniqueValues)))]
+}
   
 FnSummaryStatisticsScreenBuildTable <- function(Dataset,
                                                 TableColumns,
@@ -12,17 +17,28 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
                                                 TableStatitisticsTypes,
                                                 TableDescriptivesTypes,
                                                 TableObservations,
+                                                TableLength,
                                                 TableFilter,
                                                 TableOwnStatistic,
                                                 TableUseGroupingColumnsWithDescriptives,
                                                 TableQuantilesVector,
                                                 TableColor,
                                                 TableTextColor,
-                                                TableHeader,
-                                                TableHeatmap) {
+                                                TableHeader) {
   #####
   # INTERNAL VARIABLES CREATION, RECODING, ERROR CHECKING
   #####
+  
+  if (is.null(TableGroupingColumns)) {
+    TableGroupingColumns <- ""
+  }
+  if (is.null(TableStatitisticsTypes)) {
+    TableStatitisticsTypes <- ""
+  }
+  if (is.null(TableDescriptivesTypes)) {
+    TableDescriptivesTypes <- ""
+  }
+  
   if (TableColumns == "") {
     show_toast("No columns selected",
                 type = "error",
@@ -32,14 +48,14 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
   }
     
   if (any(TableGroupingColumns %chin% TableColumns)) {
-    show_toast("Grouping in both grouping and selected lists",
+    show_toast("Grouping variable(s) both in columns and grouping columns lists",
                 type = "error",
                 position = "top-end",
                 timer = 6000)
     return()
   }
-  
-  if (any(str_detect(TableFilter, TableGroupingColumns))) {
+
+  if (any(str_detect(TableFilter, TableGroupingColumns)) & TableGroupingColumns != "" & TableFilter != "") {
     show_toast("Grouping columns cannot be used as filter", type = "error", position = "top-end", timer = 6000)
     return()
   }
@@ -49,6 +65,10 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
       show_toast("Grouping columns must be of type character or factor", type = "error", position = "top-end", timer = 6000)
       return()
     }
+  }
+  
+  if (TableObservations == TableLength) {
+    TableObservations <- ""
   }
   
   if (TableObservations != "" & TableFilter != "") {
@@ -76,9 +96,8 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
     }
   }
   
-  
   TableOwnStatisticList <- unlist(str_split(TableOwnStatistic, ";"))
-  TableOwnStatisticColumns <- unlist(str_split(TableOwnStatisticList[2], ","))
+  TableOwnStatisticColumns <- str_trim(unlist(str_split(TableOwnStatisticList[2], ",")))
   
   if (TableOwnStatistic != "") {
     TableOwnStatisticError <- tryCatch({
@@ -86,13 +105,13 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
       if (TableGroupingColumns != "") {
           
         if (TableFilter != "") {
-          TableOwnStatistic <- Dataset[eval(parse(text = TableFilter)),
-                                       eval(parse(text = TableOwnStatisticList[1])),
+          TableOutputOwnStatistic <- Dataset[eval(parse(text = TableFilter)),
+                                       eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
                                        .SDcols = TableOwnStatisticColumns,
                                        by = TableGroupingColumns
             ][, t(.SD), .SDcols = TableOwnStatisticColumns]
         } else {
-          TableOwnStatistic <- Dataset[, eval(parse(text = TableOwnStatisticList[1])),
+          TableOutputOwnStatistic <- Dataset[, eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
                                        .SDcols = TableOwnStatisticColumns,
                                        by = TableGroupingColumns
             ][, t(.SD), .SDcols = TableOwnStatisticColumns]
@@ -101,15 +120,18 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
         } else {
           
           if (TableFilter != "") {
-            Dataset[eval(parse(text = TableFilter)), eval(parse(text = TableOwnStatisticList[1])), .SDcols = TableOwnStatisticColumns
+            TableOutputOwnStatistic <- Dataset[eval(parse(text = TableFilter)),
+                                               eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
+                                               .SDcols = TableOwnStatisticColumns
               ][, t(.SD), .SDcols = TableOwnStatisticColumns]
           } else {
-            TableOwnStatistic <- Dataset[, eval(parse(text = TableOwnStatisticList[1])), .SDcols = TableOwnStatisticColumns
+            TableOutputOwnStatistic <- Dataset[, eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
+                                         .SDcols = TableOwnStatisticColumns
               ][, t(.SD), .SDcols = TableOwnStatisticColumns]
           }
         }
         
-        colnames(TableOwnStatistic) <- unlist(str_split(TableOwnStatisticList[3], ","))
+        colnames(TableOutputOwnStatistic) <- unlist(str_split(TableOwnStatisticList[3], ","))
     },
     error = function(c) {
       show_toast("Incorrect own statistic expression provided", type = "error", position = "top-end", timer = 6000)
@@ -187,23 +209,42 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
     TableQuantile <- data.table(rn = TableColumns)
   }
     
+  # for correlation
+  if ("cor" %chin% TableStatitisticsTypes & ! identical(TableColumnsNumeric, character(0))) {
     
+    if (TableFilter == "") {
+      TableCorrelation <- Dataset[, lapply(.SD, cor, .SD, use = "complete.obs"),
+                                  .SDcols = TableColumnsNumeric
+        ][, t(.SD)]
+      
+    } else {
+      TableCorrelation <- Dataset[eval(parse(text = TableFilter)),
+                                  lapply(.SD, cor, .SD, use = "complete.obs"),
+                                  .SDcols = TableColumnsNumeric
+        ][, t(.SD)]
+    }
+      
+    colnames(TableCorrelation) <- "correlation"
+    
+  } else {
+    TableCorrelation <- data.table(rn = TableColumns)
+  }
+  
   # for other statistics
-  TableStatitisticsTypes <- TableStatitisticsTypes[!TableStatitisticsTypes == "quantile"]
-    
+  TableStatitisticsTypes <- TableStatitisticsTypes[!TableStatitisticsTypes %chin% c("quantile", "cor")]
+  TableStatitisticsTypes <- if (identical(TableStatitisticsTypes, character(0))) {""} else {TableStatitisticsTypes}
+  
   if (TableStatitisticsTypes != "" & ! identical(TableColumnsNumeric, character(0))) {
       
       TableStatitisticsTypesRecoded <- vapply(TableStatitisticsTypes, function(x) {switch(x,
                                                                                           "mean" = "mean",
                                                                                           "median" = "median",
-                                                                                          "mode" = "mode",
                                                                                           "max" = "maximum",
                                                                                           "min" = "minimum",
                                                                                           "var" = "variance",
                                                                                           "sd" = "standard deviation",
                                                                                           "kurtosis" = "kurtosis",
-                                                                                          "skewness" = "skewness",
-                                                                                          "quantile" = "quantiles")},
+                                                                                          "skewness" = "skewness")},
                                               FUN.VALUE = character(1))
       
       if (TableGroupingColumns != "") {
@@ -252,24 +293,13 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
     } else {
     TableWithStatistics <- data.table(rn = TableColumns)
   }
-    
-    
+
+  
   #####
   # TABLE WITH DESCRIPTIVES
   #####
     
-    # If 'uniqueN' was in descriptives
-    if ("uniqueN" %chin% TableDescriptivesTypes) {
-      
-      TableUniqueN <- Dataset[, lapply(.SD, uniqueN), .SDcols = TableColumnsCategorical
-        ][, t(.SD), .SDcols = TableColumnsCategorical]
-      colnames(TableUniqueN) <-  "number of unique observations"
-      
-    } else {
-      TableUniqueN <- data.table(rn = TableColumns)
-    }
-    
-    # If 'class' was in descriptives
+    # for class descriptive
     if ("class" %chin% TableDescriptivesTypes) {
       TableClasses <- Dataset[, lapply(.SD, class), .SDcols = TableColumns
                               ][, t(.SD), .SDcols = TableColumns]
@@ -279,15 +309,17 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
       TableClasses <- data.table(rn = TableColumns)
     }
     
-    # For other descriptives
-    TableDescriptivesTypes <- TableDescriptivesTypes[!TableDescriptivesTypes %chin% c("uniqueN", "class")]
+    # for other descriptives
+    TableDescriptivesTypes <- TableDescriptivesTypes[!TableDescriptivesTypes %chin% c("class")]
     
     if (TableDescriptivesTypes != "") {
       
       TableDescriptivesTypesRecoded <- vapply(TableDescriptivesTypes, function(x) {
         switch(x,
                "count_na_percentage" = "% rate of empty observations",
-               "count_na" = "number of empty observations"
+               "count_na" = "number of empty observations",
+               "find_mode" = "mode",
+               "uniqueN" = "number of unique observations"
         )
       }, FUN.VALUE = character(1))
       
@@ -348,12 +380,12 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
       
       if (TableFilter != "") {
         TableOwnStatistic <- Dataset[eval(parse(text = TableFilter)),
-                                     eval(parse(text = TableOwnStatisticList[1])),
+                                     eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
                                      .SDcols = TableOwnStatisticColumns,
                                      by = TableGroupingColumns
           ][, t(.SD), .SDcols = TableOwnStatisticColumns]
       } else {
-        TableOwnStatistic <- Dataset[, eval(parse(text = TableOwnStatisticList[1])),
+        TableOwnStatistic <- Dataset[, eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
                                      .SDcols = TableOwnStatisticColumns,
                                      by = TableGroupingColumns
           ][, t(.SD), .SDcols = TableOwnStatisticColumns]
@@ -362,10 +394,12 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
     } else {
       
       if (TableFilter != "") {
-        Dataset[eval(parse(text = TableFilter)), eval(parse(text = TableOwnStatisticList[1])), .SDcols = TableOwnStatisticColumns
+        Dataset[eval(parse(text = TableFilter)), eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
+                .SDcols = TableOwnStatisticColumns
           ][, t(.SD), .SDcols = TableOwnStatisticColumns]
       } else {
-        TableOwnStatistic <- Dataset[, eval(parse(text = TableOwnStatisticList[1])), .SDcols = TableOwnStatisticColumns
+        TableOwnStatistic <- Dataset[, eval(parse(text = paste0("lapply(.SD, ", TableOwnStatisticList[1],")"))),
+                                     .SDcols = TableOwnStatisticColumns
           ][, t(.SD), .SDcols = TableOwnStatisticColumns]
       }
     }
@@ -383,15 +417,15 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
   TableWithStatistics <- as.data.table(TableWithStatistics, keep.rownames = TRUE)
   TableQuantile <- as.data.table(TableQuantile, keep.rownames = TRUE)
   TableWithDescriptives <- as.data.table(TableWithDescriptives, keep.rownames = TRUE)
-  TableUniqueN <- as.data.table(TableUniqueN, keep.rownames = TRUE)
   TableOwnStatistic <- as.data.table(TableOwnStatistic, keep.rownames = TRUE)
+  TableCorrelation <- as.data.table(TableCorrelation, keep.rownames = TRUE)
     
   TableMerged <- merge(TableClasses,
                         merge(TableWithStatistics,
                               merge(TableQuantile,
                                     merge(TableWithDescriptives,
-                                          merge(TableUniqueN,
-                                                TableOwnStatistic,
+                                          merge(TableOwnStatistic,
+                                                TableCorrelation,
                                                 by = "rn",
                                                 all = TRUE),
                                           by = "rn",
@@ -409,13 +443,12 @@ FnSummaryStatisticsScreenBuildTable <- function(Dataset,
   #####
   # CUSTOMIZE APPEARANCE
   #####
-  
-  # add heatmap
   datatable(TableMerged,
             caption = TableHeader,
             class = 'cell-border stripe',
             rownames = FALSE,
             extensions = 'Buttons',
+            width = "97%",
             options = list(dom = 'Bfrtip',
                            buttons = list('copy', 'print', list(extend = 'collection',
                                                                 buttons = c('csv', 'excel', 'pdf'),

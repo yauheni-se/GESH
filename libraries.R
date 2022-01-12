@@ -1,22 +1,25 @@
+# shiny & UI
 library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyWidgets)
 library(shinyFiles)
 library(shinyjs)
-#library(colourpicker)
 library(webshot)
 library(DT)
 library(knitr)
-#webshot::install_phantomjs()
-library(data.table)
-library(dplyr)
 library(ggplot2)
 library(ggthemes)
 library(plotly)
 library(RColorBrewer)
-library(stringr)
 
+# Working with data
+library(data.table)
+library(dplyr)
+library(stringr)
+library(tools)
+
+# Importing data
 library(gretlReadWrite)
 library(readxl)
 library(readr)
@@ -24,4 +27,5 @@ library(haven)
 library(foreign)
 library(sas7bdat)
 
-library(tools)
+# Statistics & econometrics
+library(moments)

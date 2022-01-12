@@ -52,7 +52,7 @@ ui <- tagList(dashboardPage(
 server <- function(input, output, session) {
   # here will be 8 server modules
   MdImportScreenServer("Import")
-  MdSummaryStatisticsServer("SummaryStatistics")
+  MdSummaryStatisticsScreenServer("SummaryStatistics")
   MdVisualizeScreenServer("Visualize")
 }
 

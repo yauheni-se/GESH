@@ -1,6 +1,6 @@
 ---
 output: html_document
-title: "<center>Plots"
+title: "<center>Tables"
 always_allow_html: true
 ---
 
@@ -11,17 +11,17 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```{r Child inclusion, eval=FALSE, include=FALSE, child='rmarkdown_child.Rmd'}
 ```
 
-```{r Plots, include=FALSE}
+```{r Tables, include=FALSE}
 out <- NULL
-PlotBoxWidth <- NULL
+TableBoxWidth <- NULL
 
 for (i in names(Configs)) {
-  PlotBoxWidth[[i]] <- switch(Configs[[i]]$PlotBoxSize[1], "large" = 12, "big" = 9, "normal" = 6, "small" = 3)
+  TableBoxWidth[[i]] <- switch(Configs[[i]]$TableBoxSize[1], "large" = 12, "big" = 9, "normal" = 6, "small" = 3)
 }
 
-mapply(function(Plot, PlotBoxWidth) {
+mapply(function(Table, TableBoxWidth) {
   out <<- c(out, knit_child(input = 'rmarkdown_child.Rmd', envir = environment()))
-}, Plot = Plots, PlotBoxWidth = PlotBoxWidth)
+}, Table = Tables, TableBoxWidth = TableBoxWidth)
 ```
 
 `r paste(out, collapse = "\n")`
