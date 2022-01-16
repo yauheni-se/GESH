@@ -19,11 +19,11 @@ MdVisualizeScreenUI <- function(id) {
       
         fluidRow(
           column(width = 2,
-                 selectInput(ns("MdVisualizeScreenSelectDataset"), "Select dataset",
+                 selectInput(ns("MdVisualizeScreenSelectDataset"), "Dataset",
                              choices = "")),
           column(width = 2,
                  selectInput(ns("MdVisualizeScreenPlotType"),
-                             "Select plot type",
+                             "Plot type",
                              choices = c("scatter" = "point",
                                          "area",
                                          "line",
@@ -64,7 +64,7 @@ MdVisualizeScreenUI <- function(id) {
           conditionalPanel('input.MdVisualizeScreenPlotGroupColorAxis == ""',
                            ns = ns,
                            column(width = 2,
-                                  colourInput(ns("MdVisualizeScreenPlotColor"), "Color", value = "black"))),
+                                  colorPickr(ns("MdVisualizeScreenPlotColor"), "Color", selected = "black"))),
 
           conditionalPanel('(input.MdVisualizeScreenPlotType == "line" ||
                             input.MdVisualizeScreenPlotType == "point") &&
@@ -228,7 +228,7 @@ MdVisualizeScreenUI <- function(id) {
                           color = "success",
                           block = TRUE)),
         column(width = 2,
-               actionBttn(ns("MdVisualizeScreenCreateUndoEditBtn"),
+               actionBttn(ns("MdVisualizeScreenUndoEditBtn"),
                           label = "Cancel editing",
                           icon = icon("undo"),
                           style = "jelly",

@@ -7,6 +7,8 @@ for (i in Subscripts) {
   if (!i %in% c("README.md",
                 "text.txt",
                 "RunShinyApplication.R",
+                "3.Explore/3.1.SummaryStatistics/rmarkdown.Rmd",
+                "3.Explore/3.1.SummaryStatistics/rmarkdown_child.Rmd",
                 "3.Explore/3.2.Visualize/rmarkdown.Rmd",
                 "3.Explore/3.2.Visualize/rmarkdown_child.Rmd")) {
     source(i)
@@ -38,6 +40,7 @@ ui <- tagList(dashboardPage(
     tabItems(
       # here will be 8 ui modules
       MdImportScreenUI("Import"),
+      MdSummaryStatisticsScreenUI("SummaryStatistics"),
       MdVisualizeScreenUI("Visualize")
     )
   ),
@@ -49,6 +52,7 @@ ui <- tagList(dashboardPage(
 server <- function(input, output, session) {
   # here will be 8 server modules
   MdImportScreenServer("Import")
+  MdSummaryStatisticsScreenServer("SummaryStatistics")
   MdVisualizeScreenServer("Visualize")
 }
 

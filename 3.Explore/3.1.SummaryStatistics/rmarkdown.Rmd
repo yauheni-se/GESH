@@ -1,0 +1,27 @@
+---
+output: html_document
+title: "<center>Tables"
+always_allow_html: true
+---
+
+```{r Setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r Child inclusion, eval=FALSE, include=FALSE, child='rmarkdown_child.Rmd'}
+```
+
+```{r Tables, include=FALSE}
+out <- NULL
+TableBoxWidth <- NULL
+
+for (i in names(Configs)) {
+  TableBoxWidth[[i]] <- switch(Configs[[i]]$TableBoxSize[1], "large" = 12, "big" = 9, "normal" = 6, "small" = 3)
+}
+
+mapply(function(Table, TableBoxWidth) {
+  out <<- c(out, knit_child(input = 'rmarkdown_child.Rmd', envir = environment()))
+}, Table = Tables, TableBoxWidth = TableBoxWidth)
+```
+
+`r paste(out, collapse = "\n")`

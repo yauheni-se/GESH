@@ -4,7 +4,7 @@ MdVisualizeScreenServer <- function(id) {
     function(input, output, session) {
       ns <- session$ns
       hide("MdVisualizeScreenEditPlotBtn")
-      hide("MdVisualizeScreenCreateUndoEditBtn")
+      hide("MdVisualizeScreenUndoEditBtn")
 
       #####
       # UPDATE INPUTS WHEN A NEW DATASET IS UPLOADED / SELECTED
@@ -116,9 +116,9 @@ MdVisualizeScreenServer <- function(id) {
                           choices = MdVisualizeScreenCurrentDatasetColumnNames(),
                           selected = "")
         
-        updateColourInput(session,
-                          inputId = "MdVisualizeScreenPlotColor",
-                          value = "black")
+        updateColorPickr(session,
+                         inputId = "MdVisualizeScreenPlotColor",
+                         value = "black")
         
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotColorBrew",
@@ -422,7 +422,7 @@ MdVisualizeScreenServer <- function(id) {
               hide("MdVisualizeScreenPlotBoxSize")
               
               show("MdVisualizeScreenEditPlotBtn")
-              show("MdVisualizeScreenCreateUndoEditBtn")
+              show("MdVisualizeScreenUndoEditBtn")
               
               #####
               # UPDATING INPUTS
@@ -461,9 +461,9 @@ MdVisualizeScreenServer <- function(id) {
                                 choices = MdVisualizeScreenCurrentPlotDatasetEditColumnNames,
                                 selected = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotAxisY[1])
               
-              updateColourInput(session,
-                                inputId = "MdVisualizeScreenPlotColor",
-                                value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotColor[1])
+              updateColorPickr(session,
+                               inputId = "MdVisualizeScreenPlotColor",
+                               value = MdVisualizeScreenCurrentPlotConfigurationEdit$PlotColor[1])
               
               updateSelectInput(session,
                                 inputId = "MdVisualizeScreenPlotColorBrew",
@@ -545,7 +545,7 @@ MdVisualizeScreenServer <- function(id) {
       # CLICKING CANCEL EDITING BUTTON
       #####
       
-      observeEvent(input$MdVisualizeScreenCreateUndoEditBtn, {
+      observeEvent(input$MdVisualizeScreenUndoEditBtn, {
         
         for (j in MdVisualizeScreenPlotEditBtnNames) {
           show(j)
@@ -558,7 +558,7 @@ MdVisualizeScreenServer <- function(id) {
         show("MdVisualizeScreenPlotBoxSize")
         
         hide("MdVisualizeScreenEditPlotBtn")
-        hide("MdVisualizeScreenCreateUndoEditBtn")
+        hide("MdVisualizeScreenUndoEditBtn")
         
         #####
         # LOAD PREVIOUS STATE OF INPUTS
@@ -584,9 +584,9 @@ MdVisualizeScreenServer <- function(id) {
                           inputId = "MdVisualizeScreenPlotAxisY",
                           selected = MdVisualizeScreenInputsBeforeEdit$PlotAxisY[1])
         
-        updateColourInput(session,
-                          inputId = "MdVisualizeScreenPlotColor",
-                          value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
+        updateColorPickr(session,
+                         inputId = "MdVisualizeScreenPlotColor",
+                         value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
         
         updateSelectInput(session,
                           inputId = "MdVisualizeScreenPlotColorBrew",
@@ -736,7 +736,7 @@ MdVisualizeScreenServer <- function(id) {
           show("MdVisualizeScreenPlotBoxSize")
           
           hide("MdVisualizeScreenEditPlotBtn")
-          hide("MdVisualizeScreenCreateUndoEditBtn")
+          hide("MdVisualizeScreenUndoEditBtn")
           
           #####
           # LOAD PREVIOUS STATE OF INPUTS
@@ -762,9 +762,9 @@ MdVisualizeScreenServer <- function(id) {
                             inputId = "MdVisualizeScreenPlotAxisY",
                             selected = MdVisualizeScreenInputsBeforeEdit$PlotAxisY[1])
           
-          updateColourInput(session,
-                            inputId = "MdVisualizeScreenPlotColor",
-                            value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
+          updateColorPickr(session,
+                           inputId = "MdVisualizeScreenPlotColor",
+                           value = MdVisualizeScreenInputsBeforeEdit$PlotColor[1])
           
           updateSelectInput(session,
                             inputId = "MdVisualizeScreenPlotColorBrew",

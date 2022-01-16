@@ -66,21 +66,21 @@ FnImportScreenFileImport <- function(FileSlct,
     
   } else if (FileFormatSlct == "xlsx") {
     if (RangeCellSlct == "") { 
-      read_excel(FileSlct, FileSheetSlct)
+      as.data.table(read_excel(FileSlct, FileSheetSlct))
     } else {
-      read_excel(FileSlct, FileSheetSlct, RangeCellSlct)
+      as.data.table(read_excel(FileSlct, FileSheetSlct, RangeCellSlct))
     }
     
   } else if (FileFormatSlct == "sav") {
-    read.spss(FileSlct, to.data.frame = TRUE)
+    as.data.table(read.spss(FileSlct, to.data.frame = TRUE))
     
   } else if (FileFormatSlct == "sas7bdat") {
-    read.sas7bdat(FileSlct)
+    as.data.table(read.sas7bdat(FileSlct))
     
   } else if (FileFormatSlct == "dta") {
-    read_dta(FileSlct)
+    as.data.table(read_dta(FileSlct))
 
   } else if (FileFormatSlct == "gdt") {
-    read.gdt(FileSlct)
+    as.data.table(read.gdt(FileSlct))
   }
 }
